@@ -1,39 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Sign in / Sign up — LIFEVEST</title>
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="style.css">
-   <link rel="stylesheet" href="Login.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020a14" />
+  <title>Sign in / Sign up — LIFEVEST</title>
+  <style>html,body{background:#020a14;color:#d6efff;}</style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="caustics"></div>
-  <div class="bubbles">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
+  <div class="bg-aurora"></div>
+  <div class="bg-aurora alt"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <div class="container">
-    <header>
-      <h1 class="logo">LIFEVEST</h1>
-      <nav class="nav-buttons">
-        <a class="nav-btn" href="index.html">Home</a>
-        <a class="nav-btn" href="about.html">About</a>
-        <a class="nav-btn" href="contact.html">Contact</a>
-        <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn active" href="Login.html">Sign Up / Log In</a>
-      </nav>
-    </header>
+  <nav class="navbar" aria-label="Primary">
+    <div class="navbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-links" id="nav-links">
+        <li><a class="nav-btn" href="index.html">Home</a></li>
+        <li><a class="nav-btn" href="vault.html">Vault</a></li>
+        <li><a class="nav-btn" href="about.html">About</a></li>
+        <li><a class="nav-btn" href="plans.html">Plans</a></li>
+        <li><a class="nav-btn" href="contact.html">Contact</a></li>
+        <li><a class="nav-btn nav-cta active" href="Login.html">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <main>
+  <main>
+    <div class="container">
       <div class="auth-wrap">
         <section class="auth-card">
           <h2>Welcome back</h2>
-          <p class="subtitle">Log in to continue your journey.</p>
+          <p class="subtitle">Log in to keep your streak alive.</p>
           <form onsubmit="login(event)" autocomplete="on">
             <div class="field">
               <label for="loginUname">Username</label>
@@ -57,7 +62,7 @@
 
         <section class="auth-card">
           <h2>Create an account</h2>
-          <p class="subtitle">Start learning in under a minute.</p>
+          <p class="subtitle">Free forever. Upgrade when it earns its keep.</p>
           <form onsubmit="register(event)" autocomplete="on">
             <div class="field">
               <label for="registerUname">Username</label>
@@ -76,11 +81,44 @@
           </p>
         </section>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+        <p>Financial literacy that meets you where you are.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="vault.html">The Vault</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="Login.html">Sign in</a></li>
+          <li><a href="Login.html">Create an account</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> LIFEVEST</span>
+      <span>Made with care, on the deep end of the pool.</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="app.js" defer></script>
 
   <script>
-    const API_BASE = window.location.origin.startsWith('http')
+    const API_BASE = window.location.origin && window.location.origin.startsWith('http')
       ? window.location.origin
       : 'http://localhost:9999';
 
@@ -106,13 +144,11 @@
     async function login(event) {
       event.preventDefault();
       const form = event.target;
-      const data = {
-        username: form.loginUname.value.trim(),
-        password: form.loginPsw.value,
-      };
+      const data = { username: form.loginUname.value.trim(), password: form.loginPsw.value };
       try {
         await postJSON('/login', data);
         setFlash('loginFlash', 'success', 'Login successful — redirecting…');
+        if (window.lvSfx) window.lvSfx.success();
         setTimeout(() => { window.location.href = 'index.html'; }, 600);
       } catch (error) {
         setFlash('loginFlash', 'error', error.message || 'Login failed');
@@ -122,13 +158,11 @@
     async function register(event) {
       event.preventDefault();
       const form = event.target;
-      const data = {
-        username: form.registerUname.value.trim(),
-        password: form.registerPsw.value,
-      };
+      const data = { username: form.registerUname.value.trim(), password: form.registerPsw.value };
       try {
         await postJSON('/register', data);
         setFlash('registerFlash', 'success', 'Account created — log in on the left.');
+        if (window.lvSfx) window.lvSfx.success();
         form.reset();
       } catch (error) {
         setFlash('registerFlash', 'error', error.message || 'Registration failed');

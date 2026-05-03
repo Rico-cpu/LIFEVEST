@@ -3,47 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020a14" />
   <title>About — LIFEVEST</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>html,body{background:#020a14;color:#d6efff;}</style>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="caustics"></div>
-  <div class="bubbles">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
+  <div class="bg-aurora"></div>
+  <div class="bg-aurora alt"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <div class="container">
-    <header>
-      <h1 class="logo">LIFEVEST</h1>
-      <nav class="nav-buttons">
-        <a class="nav-btn" href="index.html">Home</a>
-        <a class="nav-btn active" href="about.html">About</a>
-        <a class="nav-btn" href="contact.html">Contact</a>
-        <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign Up / Log In</a>
-      </nav>
-    </header>
+  <nav class="navbar" aria-label="Primary">
+    <div class="navbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-links" id="nav-links">
+        <li><a class="nav-btn" href="index.html">Home</a></li>
+        <li><a class="nav-btn" href="vault.html">Vault</a></li>
+        <li><a class="nav-btn active" href="about.html">About</a></li>
+        <li><a class="nav-btn" href="plans.html">Plans</a></li>
+        <li><a class="nav-btn" href="contact.html">Contact</a></li>
+        <li><a class="nav-btn nav-cta" href="Login.html">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <main>
-      <section class="glass-card">
+  <main>
+    <section class="hero">
+      <div class="hero-inner container">
         <div class="tag-box"><span class="tag">What we do</span></div>
         <h1>Real-world money skills, made approachable.</h1>
-        <p class="description">
-          LIFEVEST helps you build financial confidence through interactive tools and
-          step-by-step lessons. Whether you're learning how to budget, save, manage credit,
-          or invest, we guide you in plain language — turning concepts into everyday
-          actions so you can make smarter decisions about your future.
+        <p class="lead">
+          LIFEVEST is built for people who never got the talk about money. We turn
+          finance into something practical — daily lessons, hands-on tools, small
+          wins you can stack — so the topic stops feeling like someone else’s job.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="Login.html">Create an account</a>
           <a class="btn btn-ghost" href="contact.html">Talk to us</a>
         </div>
-      </section>
-    </main>
-  </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <header class="section-head">
+          <div class="tag-box"><span class="tag">What we believe</span></div>
+          <h2>Three small ideas, repeated.</h2>
+        </header>
+        <div class="features-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <article class="feature">
+            <div class="feature-icon">🌊</div>
+            <h3>Money is a current</h3>
+            <p>It’s always moving. The job isn’t to dam it up — it’s to direct it.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">🪜</div>
+            <h3>Tiny steps win</h3>
+            <p>Daily reps beat big resolutions. We design for the streak, not the sprint.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">🧭</div>
+            <h3>Plain-language only</h3>
+            <p>If you need a glossary to read it, we re-wrote it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+        <p>Financial literacy that meets you where you are.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="vault.html">The Vault</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="Login.html">Sign in</a></li>
+          <li><a href="Login.html">Create an account</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> LIFEVEST</span>
+      <span>Made with care, on the deep end of the pool.</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="app.js" defer></script>
 </body>
 </html>

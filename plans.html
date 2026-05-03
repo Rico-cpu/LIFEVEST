@@ -3,197 +3,140 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020a14" />
   <title>Plans — LIFEVEST</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>html,body{background:#020a14;color:#d6efff;}</style>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .plans-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      margin-top: 1rem;
-      width: 100%;
-      max-width: 1080px;
-    }
-    .plan {
-      padding: 2rem 1.75rem;
-      border-radius: var(--radius);
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      box-shadow: var(--shadow-glass);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-    .plan::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 50%);
-    }
-    .plan:hover {
-      transform: translateY(-4px);
-      border-color: var(--glass-border-strong);
-      box-shadow: 0 30px 80px rgba(0, 35, 70, 0.65), 0 0 32px rgba(56, 225, 255, 0.2);
-    }
-    .plan-name {
-      font-size: 0.85rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #9bd6ff;
-      margin-bottom: 0.5rem;
-    }
-    .plan-price {
-      font-size: 2.6rem;
-      font-weight: 700;
-      background: linear-gradient(180deg, #ffffff 0%, #b3eaff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.25rem;
-    }
-    .plan-price .period {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      -webkit-text-fill-color: var(--text-dim);
-    }
-    .plan-tagline {
-      color: var(--text-dim);
-      font-size: 0.95rem;
-      margin-bottom: 1.25rem;
-    }
-    .plan ul {
-      list-style: none;
-      margin: 0 0 1.5rem;
-      padding: 0;
-      flex-grow: 1;
-    }
-    .plan li {
-      padding: 0.45rem 0;
-      font-size: 0.93rem;
-      color: var(--text);
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-    }
-    .plan li::before {
-      content: '✓';
-      color: var(--accent);
-      font-weight: 700;
-      flex-shrink: 0;
-      text-shadow: 0 0 8px var(--accent-glow);
-    }
-    .plan.featured {
-      border-color: rgba(56, 225, 255, 0.5);
-      background: linear-gradient(160deg, rgba(56, 225, 255, 0.18), rgba(124, 92, 255, 0.12), var(--glass-bg) 60%);
-      box-shadow: 0 30px 80px rgba(0, 35, 70, 0.65), 0 0 40px rgba(56, 225, 255, 0.25);
-    }
-    .plan.featured .badge {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 999px;
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, #38e1ff, #7c5cff);
-      color: #02101c;
-      font-weight: 700;
-    }
-    .plans-intro {
-      text-align: center;
-      max-width: 720px;
-      margin: 0 auto 2rem;
-    }
-    @media (max-width: 900px) {
-      .plans-grid { grid-template-columns: 1fr; }
-    }
-  </style>
 </head>
 <body>
-  <div class="caustics"></div>
-  <div class="bubbles">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
+  <div class="bg-aurora"></div>
+  <div class="bg-aurora alt"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <div class="container">
-    <header>
-      <h1 class="logo">LIFEVEST</h1>
-      <nav class="nav-buttons">
-        <a class="nav-btn" href="index.html">Home</a>
-        <a class="nav-btn" href="about.html">About</a>
-        <a class="nav-btn" href="contact.html">Contact</a>
-        <a class="nav-btn active" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign Up / Log In</a>
-      </nav>
-    </header>
+  <nav class="navbar" aria-label="Primary">
+    <div class="navbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-links" id="nav-links">
+        <li><a class="nav-btn" href="index.html">Home</a></li>
+        <li><a class="nav-btn" href="vault.html">Vault</a></li>
+        <li><a class="nav-btn" href="about.html">About</a></li>
+        <li><a class="nav-btn active" href="plans.html">Plans</a></li>
+        <li><a class="nav-btn" href="contact.html">Contact</a></li>
+        <li><a class="nav-btn nav-cta" href="Login.html">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <main style="flex-direction: column;">
-      <div class="plans-intro">
-        <div class="tag-box"><span class="tag">Find your plan</span></div>
-        <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; margin: 1rem 0; background: linear-gradient(180deg, #ffffff 0%, #b3eaff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-          Unlock hidden financial knowledge.
-        </h1>
-        <p class="description" style="margin: 0 auto;">
-          Pick a plan that fits where you are. Upgrade anytime as your goals grow.
+  <main>
+    <section class="section">
+      <div class="container">
+        <header class="section-head">
+          <div class="tag-box"><span class="tag">Find your plan</span></div>
+          <h2>Free forever. Upgrade when it earns its keep.</h2>
+          <p>Three tiers. Pay monthly or annual — annual saves up to $149/yr.</p>
+        </header>
+
+        <div class="plans-grid">
+          <article class="plan">
+            <div class="plan-name">Voyager</div>
+            <div class="plan-price">$9<span class="period"> /mo</span></div>
+            <div class="plan-tagline">Just dipping a toe in.</div>
+            <ul>
+              <li>Daily Vault unlimited replays</li>
+              <li>10 starter courses</li>
+              <li>3 investment strategy templates</li>
+              <li>Basic budgeting + savings tools</li>
+              <li>Community access</li>
+              <li>Compound-interest calculator</li>
+            </ul>
+            <a class="btn btn-ghost btn-block" href="Login.html">Start Voyager</a>
+          </article>
+
+          <article class="plan featured">
+            <span class="badge">Best value</span>
+            <div class="plan-name">Sovereign</div>
+            <div class="plan-price">$29<span class="period"> /mo</span></div>
+            <div class="plan-tagline">For people who actually want to grow.</div>
+            <ul>
+              <li>Everything in Voyager</li>
+              <li>AI Coach — daily personalized briefings</li>
+              <li>Tax-loss harvesting opportunities</li>
+              <li>Portfolio X-Ray dashboard</li>
+              <li>Retirement Crystal Ball (Monte Carlo)</li>
+              <li>50+ premium courses</li>
+              <li>Whale Alerts (insider-trade signals)</li>
+              <li>20 strategy templates + copy-trade</li>
+              <li>12 advanced calculators</li>
+              <li>1 expert session / year</li>
+              <li>Priority support, ad-free</li>
+            </ul>
+            <a class="btn btn-primary btn-block" href="Login.html">Start 7-day trial</a>
+          </article>
+
+          <article class="plan">
+            <div class="plan-name">Platinum</div>
+            <div class="plan-price">$79<span class="period"> /mo</span></div>
+            <div class="plan-tagline">White-glove, family-wide.</div>
+            <ul>
+              <li>Everything in Sovereign</li>
+              <li>Dedicated account manager</li>
+              <li>Quarterly 1-on-1 strategy calls</li>
+              <li>Family plan — up to 4 members</li>
+              <li>After-hours trading window</li>
+              <li>Metal card + 3% cash back</li>
+              <li>Airport lounge access (4 visits/yr)</li>
+              <li>Bill-negotiation concierge</li>
+              <li>Unlimited strategy templates</li>
+              <li>All premium courses + early access</li>
+            </ul>
+            <a class="btn btn-ghost btn-block" href="Login.html">Choose Platinum</a>
+          </article>
+        </div>
+
+        <p style="text-align:center; margin-top: var(--space-4); font-size: 0.88rem; color: var(--text-muted);">
+          7-day free trial on Sovereign — no card required. Cancel anytime. Plans, features and pricing shown for illustration; payment isn’t wired up yet.
         </p>
       </div>
+    </section>
+  </main>
 
-      <div class="plans-grid">
-        <article class="plan">
-          <div class="plan-name">Starter</div>
-          <div class="plan-price">$0<span class="period"> /mo</span></div>
-          <div class="plan-tagline">For first-time learners.</div>
-          <ul>
-            <li>Core budgeting lessons</li>
-            <li>Savings goal tracker</li>
-            <li>Community access</li>
-            <li>Weekly money tips</li>
-          </ul>
-          <a class="btn btn-ghost btn-block" href="Login.html">Start free</a>
-        </article>
-
-        <article class="plan featured">
-          <span class="badge">Popular</span>
-          <div class="plan-name">Plus</div>
-          <div class="plan-price">$9<span class="period"> /mo</span></div>
-          <div class="plan-tagline">Tools that go deeper.</div>
-          <ul>
-            <li>Everything in Starter</li>
-            <li>Investing simulations</li>
-            <li>Personalized lesson paths</li>
-            <li>Credit score coaching</li>
-            <li>Priority support</li>
-          </ul>
-          <a class="btn btn-primary btn-block" href="Login.html">Choose Plus</a>
-        </article>
-
-        <article class="plan">
-          <div class="plan-name">Pro</div>
-          <div class="plan-price">$19<span class="period"> /mo</span></div>
-          <div class="plan-tagline">For ambitious goals.</div>
-          <ul>
-            <li>Everything in Plus</li>
-            <li>1:1 monthly coach session</li>
-            <li>Advanced portfolio tools</li>
-            <li>Tax-prep checklists</li>
-            <li>Early access to new modules</li>
-          </ul>
-          <a class="btn btn-ghost btn-block" href="Login.html">Choose Pro</a>
-        </article>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+        <p>Financial literacy that meets you where you are.</p>
       </div>
-    </main>
-  </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="vault.html">The Vault</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="Login.html">Sign in</a></li>
+          <li><a href="Login.html">Create an account</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> LIFEVEST</span>
+      <span>Made with care, on the deep end of the pool.</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="app.js" defer></script>
 </body>
 </html>

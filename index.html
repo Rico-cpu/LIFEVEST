@@ -3,48 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020a14" />
+  <meta name="description" content="LIFEVEST — financial literacy for everyone. Practical money skills, on a calm dark-aquatic UI." />
   <title>LIFEVEST — Financial literacy for everyone</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>html,body{background:#020a14;color:#d6efff;}</style>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="caustics"></div>
-  <div class="bubbles">
-    <span></span><span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span><span></span>
+  <div class="bg-aurora"></div>
+  <div class="bg-aurora alt"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <div class="container">
-    <header>
-      <h1 class="logo">LIFEVEST</h1>
-      <nav class="nav-buttons">
-        <a class="nav-btn active" href="index.html">Home</a>
-        <a class="nav-btn" href="about.html">About</a>
-        <a class="nav-btn" href="contact.html">Contact</a>
-        <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign Up / Log In</a>
-      </nav>
-    </header>
+  <nav class="navbar" aria-label="Primary">
+    <div class="navbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-links" id="nav-links">
+        <li><a class="nav-btn active" href="index.html">Home</a></li>
+        <li><a class="nav-btn" href="vault.html">Vault</a></li>
+        <li><a class="nav-btn" href="about.html">About</a></li>
+        <li><a class="nav-btn" href="plans.html">Plans</a></li>
+        <li><a class="nav-btn" href="contact.html">Contact</a></li>
+        <li><a class="nav-btn nav-cta" href="Login.html">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <main>
-      <section class="glass-card">
+  <main>
+    <section class="hero">
+      <div class="hero-inner container">
         <div class="tag-box"><span class="tag">Welcome to a new start</span></div>
-        <h1>A financial service for the people.</h1>
-        <p class="description">
-          LIFEVEST empowers you through interactive, real-world learning. We turn complex
-          financial topics into engaging tools — simulations, challenges, and personalized
-          lessons — so you can build essential money skills. From budgeting and saving to
-          credit and investing, you'll get practical education that builds confidence and
-          long-term well-being.
+        <h1>Financial wisdom for the people.</h1>
+        <p class="lead">
+          LIFEVEST turns money into something you actually want to learn. Lessons,
+          practice, and small daily wins — built around a calm aquatic interface that
+          stays out of your way.
         </p>
         <div class="cta-row">
           <a class="btn btn-primary" href="Login.html">Get started</a>
-          <a class="btn btn-ghost" href="plans.html">See plans</a>
+          <a class="btn btn-ghost" href="vault.html">Try the Daily Vault</a>
         </div>
-      </section>
-    </main>
+
+        <div class="finn-wrap">
+          <div class="finn" data-finn role="button" tabindex="0" aria-label="Tap Finn for a piece of wisdom">🐋</div>
+          <div class="finn-caption">Tap Finn for today’s wisdom.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <header class="section-head">
+          <div class="tag-box"><span class="tag">What you’ll do here</span></div>
+          <h2>Small daily moves, real long-term results.</h2>
+          <p>Four corners of the platform — pick one and start.</p>
+        </header>
+        <div class="features-grid">
+          <article class="feature">
+            <div class="feature-icon">🎯</div>
+            <h3>The Daily Vault</h3>
+            <p>A 5-letter financial word a day. Build a streak, earn Barnacle Bucks.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">📚</div>
+            <h3>The Depths</h3>
+            <p>Lessons across every level — from “what is money” to estate planning.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">🧭</div>
+            <h3>Plans</h3>
+            <p>Free forever, or upgrade to unlock autopilot tools and premium content.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-icon">🐋</div>
+            <h3>Finn</h3>
+            <p>Your guide. Tap him whenever you need a nudge of wisdom.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+        <p>Financial literacy that meets you where you are.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="vault.html">The Vault</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="Login.html">Sign in</a></li>
+          <li><a href="Login.html">Create an account</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> LIFEVEST</span>
+      <span>Made with care, on the deep end of the pool.</span>
+    </div>
+  </footer>
+
+  <div class="modal-backdrop" data-finn-modal role="dialog" aria-modal="true" aria-labelledby="finn-modal-title">
+    <div class="modal">
+      <button class="modal-close" aria-label="Close">×</button>
+      <h2 id="finn-modal-title">Finn’s wisdom</h2>
+      <blockquote></blockquote>
+      <cite></cite>
+      <button class="btn btn-primary" onclick="document.querySelector('[data-finn-modal]').classList.remove('open')">Continue your journey</button>
+    </div>
   </div>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="app.js" defer></script>
 </body>
 </html>
