@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#020a14" />
+  <title>The Vault — LIFEVEST</title>
+  <style>html,body{background:#020a14;color:#d6efff;}</style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-aurora"></div>
+  <div class="bg-aurora alt"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-bubbles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <nav class="navbar" aria-label="Primary">
+    <div class="navbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+      <button class="navbar-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="navbar-links" id="nav-links">
+        <li><a class="nav-btn" href="index.html">Home</a></li>
+        <li><a class="nav-btn active" href="vault.html">Vault</a></li>
+        <li><a class="nav-btn" href="about.html">About</a></li>
+        <li><a class="nav-btn" href="plans.html">Plans</a></li>
+        <li><a class="nav-btn" href="contact.html">Contact</a></li>
+        <li><a class="nav-btn nav-cta" href="Login.html">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <header class="section-head">
+          <div class="tag-box"><span class="tag">The Daily Vault</span></div>
+          <h2>Crack today’s 5-letter financial word.</h2>
+          <p>Six guesses. Each is a real money word. Win to earn Barnacle Bucks and keep your streak alive.</p>
+        </header>
+
+        <div class="vault-stage">
+          <div class="vault-status" id="status" aria-live="polite"></div>
+
+          <div class="wordle-grid" id="grid" aria-label="Guess grid">
+            <div class="wordle-row"><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div></div>
+            <div class="wordle-row"><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div></div>
+            <div class="wordle-row"><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div></div>
+            <div class="wordle-row"><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div></div>
+            <div class="wordle-row"><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div></div>
+            <div class="wordle-row"><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div><div class="wordle-tile"></div></div>
+          </div>
+
+          <div class="keyboard" id="keyboard">
+            <div class="keyboard-row">
+              <button class="key" data-k="Q">Q</button><button class="key" data-k="W">W</button><button class="key" data-k="E">E</button><button class="key" data-k="R">R</button><button class="key" data-k="T">T</button><button class="key" data-k="Y">Y</button><button class="key" data-k="U">U</button><button class="key" data-k="I">I</button><button class="key" data-k="O">O</button><button class="key" data-k="P">P</button>
+            </div>
+            <div class="keyboard-row">
+              <button class="key" data-k="A">A</button><button class="key" data-k="S">S</button><button class="key" data-k="D">D</button><button class="key" data-k="F">F</button><button class="key" data-k="G">G</button><button class="key" data-k="H">H</button><button class="key" data-k="J">J</button><button class="key" data-k="K">K</button><button class="key" data-k="L">L</button>
+            </div>
+            <div class="keyboard-row">
+              <button class="key wide" data-k="ENTER">Enter</button><button class="key" data-k="Z">Z</button><button class="key" data-k="X">X</button><button class="key" data-k="C">C</button><button class="key" data-k="V">V</button><button class="key" data-k="B">B</button><button class="key" data-k="N">N</button><button class="key" data-k="M">M</button><button class="key wide" data-k="BACK">⌫</button>
+            </div>
+          </div>
+
+          <p style="margin-top:1rem; font-size:0.85rem; color: var(--text-muted); text-align:center; max-width:32rem;">
+            Tap or use your keyboard. Words are picked from a small bank of finance terms.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="index.html"><span class="brand-mark"></span>LIFEVEST</a>
+        <p>Financial literacy that meets you where you are.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="vault.html">The Vault</a></li>
+          <li><a href="plans.html">Plans</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Account</h4>
+        <ul>
+          <li><a href="Login.html">Sign in</a></li>
+          <li><a href="Login.html">Create an account</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> LIFEVEST</span>
+      <span>Made with care, on the deep end of the pool.</span>
+    </div>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="app.js" defer></script>
+
+  <script>
+  (function () {
+    const WORDS = ['ASSET','BONDS','CREDS','DEBIT','EQUTY','HEDGE','INDEX','LOANS','MONEY','SHARE','STOCK','TRUST','VALUE','WAGES','YIELD','BUDGT','SAVED','EARNS'];
+    // pick a deterministic word for the day
+    const day = Math.floor(Date.now() / 86400000);
+    const ANSWER = WORDS[day % WORDS.length];
+
+    const grid = document.getElementById('grid');
+    const keyboard = document.getElementById('keyboard');
+    const status = document.getElementById('status');
+    const rows = grid.querySelectorAll('.wordle-row');
+    let row = 0, col = 0, locked = false;
+    const keyState = {}; // letter -> 'absent' | 'present' | 'correct'
+
+    function setStatus(msg, kind) {
+      status.textContent = msg;
+      status.className = 'vault-status' + (kind ? ' ' + kind : '');
+    }
+    function tilesAt(r) { return rows[r].querySelectorAll('.wordle-tile'); }
+    function currentGuess() {
+      let s = '';
+      tilesAt(row).forEach(function (t) { s += t.textContent; });
+      return s;
+    }
+
+    function pressLetter(L) {
+      if (locked || row >= 6 || col >= 5) return;
+      const tile = tilesAt(row)[col];
+      tile.textContent = L;
+      tile.classList.add('filled');
+      col++;
+      if (window.lvSfx) window.lvSfx.droplet();
+    }
+    function pressBack() {
+      if (locked || col === 0) return;
+      col--;
+      const tile = tilesAt(row)[col];
+      tile.textContent = '';
+      tile.classList.remove('filled');
+      if (window.lvSfx) window.lvSfx.bubble();
+    }
+    function pressEnter() {
+      if (locked || col < 5) { setStatus('Need 5 letters.'); return; }
+      const guess = currentGuess();
+      // score
+      const tiles = tilesAt(row);
+      const ans = ANSWER.split('');
+      const used = [false, false, false, false, false];
+      const verdict = ['absent','absent','absent','absent','absent'];
+      // first pass: correct
+      for (let i = 0; i < 5; i++) {
+        if (guess[i] === ans[i]) { verdict[i] = 'correct'; used[i] = true; }
+      }
+      // second pass: present
+      for (let i = 0; i < 5; i++) {
+        if (verdict[i] === 'correct') continue;
+        for (let j = 0; j < 5; j++) {
+          if (!used[j] && guess[i] === ans[j]) { verdict[i] = 'present'; used[j] = true; break; }
+        }
+      }
+      // apply with a small stagger
+      verdict.forEach(function (v, i) {
+        setTimeout(function () {
+          tiles[i].classList.remove('filled');
+          tiles[i].classList.add(v);
+          // update keyboard state, never downgrading
+          const L = guess[i];
+          const order = { absent: 0, present: 1, correct: 2 };
+          if (!keyState[L] || order[v] > order[keyState[L]]) {
+            keyState[L] = v;
+            const k = keyboard.querySelector('.key[data-k="' + L + '"]');
+            if (k) {
+              k.classList.remove('absent','present','correct');
+              k.classList.add(v);
+            }
+          }
+        }, i * 90);
+      });
+
+      const win = guess === ANSWER;
+      setTimeout(function () {
+        if (win) {
+          setStatus('Cracked it. +50 Barnacle Bucks 🐚', 'win');
+          locked = true;
+          if (window.lvSfx) window.lvSfx.success();
+        } else {
+          row++; col = 0;
+          if (row >= 6) {
+            setStatus('Out of guesses. Today’s word was ' + ANSWER + '.', 'lose');
+            locked = true;
+          } else {
+            setStatus('');
+            if (window.lvSfx) window.lvSfx.bubble();
+          }
+        }
+      }, 5 * 90 + 60);
+    }
+
+    function handle(k) {
+      if (k === 'ENTER') pressEnter();
+      else if (k === 'BACK') pressBack();
+      else if (/^[A-Z]$/.test(k)) pressLetter(k);
+    }
+
+    keyboard.addEventListener('click', function (e) {
+      const b = e.target.closest('.key');
+      if (b) handle(b.getAttribute('data-k'));
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (locked) return;
+      if (e.key === 'Enter') { handle('ENTER'); }
+      else if (e.key === 'Backspace') { handle('BACK'); }
+      else if (/^[a-zA-Z]$/.test(e.key)) { handle(e.key.toUpperCase()); }
+    });
+  })();
+  </script>
+</body>
+</html>
