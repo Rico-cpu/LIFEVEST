@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Login Page</title>
+   <link rel="stylesheet" href="Login.css">
+</head>
+<body>
+<div class="container">
+    <header>
+      <h1 class="logo">LIFEVEST</h1>
+      <nav class="nav-buttons">
+        <a class="nav-btn" href="index.html">Home</a>
+        <a class="nav-btn" href="about.html">About</a>
+        <a class="nav-btn" href="contact.html">Contact</a>
+        <a class="nav-btn" href="plans.html">Plans</a>
+        <a class="nav-btn" href="Login.html">Sign-Up/Login</a>
+      </nav>
+    </header>
+   <center>
+   <h2 class="ricog">Login Form</h2>
+        <button onclick="document.getElementById('loginModal').style.display='block'" style="width: auto">Login</button>
+        <div id="loginModal" class="modal">
+            <form class="modal-content animate" onsubmit="login(event)">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('loginModal').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="img_avatar2.png" alt="Avatar" class="avatar" />
+            </div>
+            <div class="container">
+                <label for="loginUname"><b>Username</b></label>
+                    <input type="text" placeholder="Enter Username" name="loginUname" required/>
+                    <label for="loginPsw"><b>Password</b></label>
+                    <input type="password" placeholder="Enter Password" name="loginPsw" required/>
+                    <button type="submit">Login</button>
+                <label>
+                <input type="checkbox" checked="checked" name="remember"/> Remember me</label>
+            </div>
+            <div class="container" style="background-color: #f1f1f1">
+                <button type="button" onclick="document.getElementById('loginModal').style.display='none'" class="cancelbtn">Cancel</button>
+                <span class="psw">Forgot <a href="#">password?</a></span>
+            </div>
+            </form>
+        </div>
+        <h2>Register Form</h2>
+        <button onclick="document.getElementById('registerModal').style.display='block'" style="width: auto">Register</button>
+        <div id="registerModal" class="modal">
+            <form class="modal-content animate" onsubmit="register(event)">
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('registerModal').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <img src="img_avatar2.png" alt="Avatar" class="avatar" />
+            </div>
+            <div class="container">
+                <label for="registerUname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="registerUname" required/>
+                <label for="registerPsw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="registerPsw" required/>
+                <button type="submit">Register</button>
+            </div>
+            <div class="container" style="background-color: #f1f1f1">
+                <button type="button" onclick="document.getElementById('registerModal').style.display='none'" class="cancelbtn">Cancel</button>
+            </div>
+            </form>
+        </div>
+        <script>
+            async function postJSON(url, data) {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                });
+                const text = await res.text();
+                let payload = {};
+                try { payload = text ? JSON.parse(text) : {}; } catch (_) { payload = { message: text }; }
+                if (!res.ok) throw new Error(payload.message || `Request failed (${res.status})`);
+                return payload;
+            }
+
+            async function login(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                try {
+                    await postJSON("/api/login", {
+                        username: formData.get("loginUname"),
+                        password: formData.get("loginPsw"),
+                    });
+                    window.location.href = "index.html";
+                } catch (error) {
+                    console.error("Login error:", error);
+                    alert("Login failed: " + error.message);
+                }
+            }
+
+            async function register(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+                try {
+                    await postJSON("/api/register", {
+                        username: formData.get("registerUname"),
+                        password: formData.get("registerPsw"),
+                    });
+                    alert("Registration Successful!");
+                    document.getElementById("registerModal").style.display = "none";
+                } catch (error) {
+                    console.error("Registration error:", error);
+                    alert("Registration failed: " + error.message);
+                }
+            }
+
+            var loginModal = document.getElementById("loginModal");
+            var registerModal = document.getElementById("registerModal");
+            window.onclick = function (event) {
+                if (event.target == loginModal) loginModal.style.display = "none";
+                if (event.target == registerModal) registerModal.style.display = "none";
+            };
+        </script>
+    </center>
+    </body>
+</html>
