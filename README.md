@@ -1,21 +1,54 @@
 # LIFEVEST
 
-Static marketing site for LIFEVEST plus a small auth API (`/api/login`, `/api/register`) backed by Vercel KV.
+A small marketing site for LIFEVEST with a local sign-up / log-in flow backed by SQLite. Dark aquatic translucent theme.
 
-## Deploy to Vercel
+## Run locally
 
-1. Push this branch to GitHub.
-2. In Vercel, **New Project → Import** the `Rico-cpu/LIFEVEST` repo.
-3. Framework preset: **Other** (no build step). Output directory: leave default.
-4. In the project's **Storage** tab, create a **KV** store and link it. Vercel auto-injects `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
-5. Hit **Deploy**.
+```
+python3 server.py
+```
 
-Without a KV store, the static pages still load fine — login/register just return a 503 with a message explaining KV isn't configured.
+Then open <http://localhost:9999/index.html>.
 
-## Local layout
+`server.py` does two jobs:
 
-- `index.html`, `about.html`, `contact.html`, `plans.html`, `Login.html` — static pages
-- `style.css`, `Login.css`, `gradient (1).png`, `Images/` — assets
-- `api/login.py`, `api/register.py` — Vercel Python serverless functions
-- `api/_kv.py` — thin Upstash/Vercel KV REST client (stdlib only)
-- `vercel.json` — pins the Python runtime
+1. Serves the static pages and assets from this directory.
+2. Handles `POST /login` and `POST /register` against a SQLite database.
+
+The database lives at `./userdata.db` by default. To put it on your Desktop instead:
+
+```
+LIFEVEST_DB_PATH=~/Desktop/lifevest.db python3 server.py
+```
+
+To change the port:
+
+```
+PORT=8080 python3 server.py
+```
+
+## Pages
+
+- `index.html` — landing
+- `about.html` — what we do
+- `contact.html` — contact form (UI only — submission is acknowledged client-side)
+- `plans.html` — pricing tiers
+- `Login.html` — side-by-side log-in and sign-up
+
+## Theme
+
+Shared in `style.css`:
+
+- Animated radial gradients drifting under a deep ocean background
+- Floating bubbles + faint caustic grid overlay
+- Glassmorphism cards (`backdrop-filter: blur(...)`) with cyan accent glows
+- Inter for typography, gradient-clipped headings
+
+## File map
+
+```
+index.html  about.html  contact.html  plans.html  Login.html
+style.css   Login.css
+server.py
+gradient (1).png
+```

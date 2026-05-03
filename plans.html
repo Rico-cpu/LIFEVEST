@@ -3,13 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LIFEVEST</title>
+  <title>Plans — LIFEVEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="https://prod.spline.design/3OQOJjbzkSnIdJar/scene.splinecode"></script>
+  <style>
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 1rem;
+      width: 100%;
+      max-width: 1080px;
+    }
+    .plan {
+      padding: 2rem 1.75rem;
+      border-radius: var(--radius);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      box-shadow: var(--shadow-glass);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .plan::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 50%);
+    }
+    .plan:hover {
+      transform: translateY(-4px);
+      border-color: var(--glass-border-strong);
+      box-shadow: 0 30px 80px rgba(0, 35, 70, 0.65), 0 0 32px rgba(56, 225, 255, 0.2);
+    }
+    .plan-name {
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #9bd6ff;
+      margin-bottom: 0.5rem;
+    }
+    .plan-price {
+      font-size: 2.6rem;
+      font-weight: 700;
+      background: linear-gradient(180deg, #ffffff 0%, #b3eaff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+    .plan-price .period {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      -webkit-text-fill-color: var(--text-dim);
+    }
+    .plan-tagline {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+    .plan ul {
+      list-style: none;
+      margin: 0 0 1.5rem;
+      padding: 0;
+      flex-grow: 1;
+    }
+    .plan li {
+      padding: 0.45rem 0;
+      font-size: 0.93rem;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .plan li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+    .plan.featured {
+      border-color: rgba(56, 225, 255, 0.5);
+      background: linear-gradient(160deg, rgba(56, 225, 255, 0.18), rgba(124, 92, 255, 0.12), var(--glass-bg) 60%);
+      box-shadow: 0 30px 80px rgba(0, 35, 70, 0.65), 0 0 40px rgba(56, 225, 255, 0.25);
+    }
+    .plan.featured .badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #38e1ff, #7c5cff);
+      color: #02101c;
+      font-weight: 700;
+    }
+    .plans-intro {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 2rem;
+    }
+    @media (max-width: 900px) {
+      .plans-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-
 <body>
-  <div class="layer-blur"></div>
+  <div class="caustics"></div>
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
 
   <div class="container">
     <header>
@@ -18,25 +134,64 @@
         <a class="nav-btn" href="index.html">Home</a>
         <a class="nav-btn" href="about.html">About</a>
         <a class="nav-btn" href="contact.html">Contact</a>
-        <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign-Up/Login</a>
+        <a class="nav-btn active" href="plans.html">Plans</a>
+        <a class="nav-btn" href="Login.html">Sign Up / Log In</a>
       </nav>
     </header>
 
-    <main>
-      <div class="content">
-        <div class="tag-box">
-          <div class="tag">Find the right plan for you.</div>
-        </div>
-
-        <h1>A way to unlock hidden knowlege</h1>
-
-        <p class="description">
-          Subscriptions for financial services and tools offer users ongoing access to valuable features like budgeting tools, investment simulations, expert content, and personalized coaching. By paying a small monthly or annual fee, users can unlock premium tools that help them build financial confidence, stay on track with goals, and avoid common money mistakes. This model provides consistent value and allows the service to continuously update and expand its offerings to meet user needs.
+    <main style="flex-direction: column;">
+      <div class="plans-intro">
+        <div class="tag-box"><span class="tag">Find your plan</span></div>
+        <h1 style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; margin: 1rem 0; background: linear-gradient(180deg, #ffffff 0%, #b3eaff 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+          Unlock hidden financial knowledge.
+        </h1>
+        <p class="description" style="margin: 0 auto;">
+          Pick a plan that fits where you are. Upgrade anytime as your goals grow.
         </p>
+      </div>
 
+      <div class="plans-grid">
+        <article class="plan">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">$0<span class="period"> /mo</span></div>
+          <div class="plan-tagline">For first-time learners.</div>
+          <ul>
+            <li>Core budgeting lessons</li>
+            <li>Savings goal tracker</li>
+            <li>Community access</li>
+            <li>Weekly money tips</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="Login.html">Start free</a>
+        </article>
 
-        </div>
+        <article class="plan featured">
+          <span class="badge">Popular</span>
+          <div class="plan-name">Plus</div>
+          <div class="plan-price">$9<span class="period"> /mo</span></div>
+          <div class="plan-tagline">Tools that go deeper.</div>
+          <ul>
+            <li>Everything in Starter</li>
+            <li>Investing simulations</li>
+            <li>Personalized lesson paths</li>
+            <li>Credit score coaching</li>
+            <li>Priority support</li>
+          </ul>
+          <a class="btn btn-primary btn-block" href="Login.html">Choose Plus</a>
+        </article>
+
+        <article class="plan">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">$19<span class="period"> /mo</span></div>
+          <div class="plan-tagline">For ambitious goals.</div>
+          <ul>
+            <li>Everything in Plus</li>
+            <li>1:1 monthly coach session</li>
+            <li>Advanced portfolio tools</li>
+            <li>Tax-prep checklists</li>
+            <li>Early access to new modules</li>
+          </ul>
+          <a class="btn btn-ghost btn-block" href="Login.html">Choose Pro</a>
+        </article>
       </div>
     </main>
   </div>

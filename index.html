@@ -3,40 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LIFEVEST</title>
+  <title>LIFEVEST — Financial literacy for everyone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="https://prod.spline.design/3OQOJjbzkSnIdJar/scene.splinecode"></script>
 </head>
-
 <body>
-  <div class="layer-blur"></div>
+  <div class="caustics"></div>
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
 
   <div class="container">
     <header>
       <h1 class="logo">LIFEVEST</h1>
       <nav class="nav-buttons">
-        <a class="nav-btn" href="index.html">Home</a>
+        <a class="nav-btn active" href="index.html">Home</a>
         <a class="nav-btn" href="about.html">About</a>
         <a class="nav-btn" href="contact.html">Contact</a>
         <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign-Up/Login</a>
+        <a class="nav-btn" href="Login.html">Sign Up / Log In</a>
       </nav>
     </header>
 
     <main>
-      <div class="content">
-        <div class="tag-box">
-          <div class="tag">Welcome to a new Start.</div>
-        </div>
-
-        <h1>A Financial Service for the People</h1>
-
+      <section class="glass-card">
+        <div class="tag-box"><span class="tag">Welcome to a new start</span></div>
+        <h1>A financial service for the people.</h1>
         <p class="description">
-          Our financial literacy service empowers individuals through interactive, real-world learning experiences. Designed to simplify complex financial topics, our platform offers engaging tools such as simulations, challenges, and personalized lessons that help users build essential money skills. From budgeting and saving to credit and investing, we provide practical education that promotes confidence and long-term financial well-being.
+          LIFEVEST empowers you through interactive, real-world learning. We turn complex
+          financial topics into engaging tools — simulations, challenges, and personalized
+          lessons — so you can build essential money skills. From budgeting and saving to
+          credit and investing, you'll get practical education that builds confidence and
+          long-term well-being.
         </p>
-
+        <div class="cta-row">
+          <a class="btn btn-primary" href="Login.html">Get started</a>
+          <a class="btn btn-ghost" href="plans.html">See plans</a>
         </div>
-      </div>
+      </section>
     </main>
   </div>
 </body>

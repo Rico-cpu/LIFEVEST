@@ -3,41 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LIFEVEST</title>
+  <title>About — LIFEVEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-  <script type="module" src="https://prod.spline.design/3OQOJjbzkSnIdJar/scene.splinecode"></script>
 </head>
-
 <body>
-  <div class="layer-blur"></div>
+  <div class="caustics"></div>
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
 
   <div class="container">
     <header>
       <h1 class="logo">LIFEVEST</h1>
       <nav class="nav-buttons">
         <a class="nav-btn" href="index.html">Home</a>
-        <a class="nav-btn" href="about.html">About</a>
+        <a class="nav-btn active" href="about.html">About</a>
         <a class="nav-btn" href="contact.html">Contact</a>
         <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign-Up/Login</a>
+        <a class="nav-btn" href="Login.html">Sign Up / Log In</a>
       </nav>
     </header>
 
     <main>
-      <div class="content">
-        <div class="tag-box">
-          <div class="tag">Here you can find out what we do!</div>
-        </div>
-
-        <h1>A Financial Service for the People</h1>
-
+      <section class="glass-card">
+        <div class="tag-box"><span class="tag">What we do</span></div>
+        <h1>Real-world money skills, made approachable.</h1>
         <p class="description">
-          This financial service helps you build real-world money skills through interactive tools and lessons. Whether you're learning how to budget, save, manage credit, or invest, it’s designed to guide you step by step. By turning financial concepts into everyday actions, it helps you make smarter decisions and feel more confident about your financial future.
+          LIFEVEST helps you build financial confidence through interactive tools and
+          step-by-step lessons. Whether you're learning how to budget, save, manage credit,
+          or invest, we guide you in plain language — turning concepts into everyday
+          actions so you can make smarter decisions about your future.
         </p>
-
-
+        <div class="cta-row">
+          <a class="btn btn-primary" href="Login.html">Create an account</a>
+          <a class="btn btn-ghost" href="contact.html">Talk to us</a>
         </div>
-      </div>
+      </section>
     </main>
   </div>
 </body>

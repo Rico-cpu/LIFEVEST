@@ -3,11 +3,21 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Login Page</title>
+   <title>Sign in / Sign up — LIFEVEST</title>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="style.css">
    <link rel="stylesheet" href="Login.css">
 </head>
 <body>
-<div class="container">
+  <div class="caustics"></div>
+  <div class="bubbles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="container">
     <header>
       <h1 class="logo">LIFEVEST</h1>
       <nav class="nav-buttons">
@@ -15,107 +25,115 @@
         <a class="nav-btn" href="about.html">About</a>
         <a class="nav-btn" href="contact.html">Contact</a>
         <a class="nav-btn" href="plans.html">Plans</a>
-        <a class="nav-btn" href="Login.html">Sign-Up/Login</a>
+        <a class="nav-btn active" href="Login.html">Sign Up / Log In</a>
       </nav>
     </header>
-   <center>
-   <h2 class="ricog">Login Form</h2>
-        <button onclick="document.getElementById('loginModal').style.display='block'" style="width: auto">Login</button>
-        <div id="loginModal" class="modal">
-            <form class="modal-content animate" onsubmit="login(event)">
-            <div class="imgcontainer">
-                <span onclick="document.getElementById('loginModal').style.display='none'" class="close" title="Close Modal">&times;</span>
-                <img src="img_avatar2.png" alt="Avatar" class="avatar" />
-            </div>
-            <div class="container">
-                <label for="loginUname"><b>Username</b></label>
-                    <input type="text" placeholder="Enter Username" name="loginUname" required/>
-                    <label for="loginPsw"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="loginPsw" required/>
-                    <button type="submit">Login</button>
-                <label>
-                <input type="checkbox" checked="checked" name="remember"/> Remember me</label>
-            </div>
-            <div class="container" style="background-color: #f1f1f1">
-                <button type="button" onclick="document.getElementById('loginModal').style.display='none'" class="cancelbtn">Cancel</button>
-                <span class="psw">Forgot <a href="#">password?</a></span>
-            </div>
-            </form>
-        </div>
-        <h2>Register Form</h2>
-        <button onclick="document.getElementById('registerModal').style.display='block'" style="width: auto">Register</button>
-        <div id="registerModal" class="modal">
-            <form class="modal-content animate" onsubmit="register(event)">
-            <div class="imgcontainer">
-                <span onclick="document.getElementById('registerModal').style.display='none'" class="close" title="Close Modal">&times;</span>
-                <img src="img_avatar2.png" alt="Avatar" class="avatar" />
-            </div>
-            <div class="container">
-                <label for="registerUname"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="registerUname" required/>
-                <label for="registerPsw"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="registerPsw" required/>
-                <button type="submit">Register</button>
-            </div>
-            <div class="container" style="background-color: #f1f1f1">
-                <button type="button" onclick="document.getElementById('registerModal').style.display='none'" class="cancelbtn">Cancel</button>
-            </div>
-            </form>
-        </div>
-        <script>
-            async function postJSON(url, data) {
-                const res = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                });
-                const text = await res.text();
-                let payload = {};
-                try { payload = text ? JSON.parse(text) : {}; } catch (_) { payload = { message: text }; }
-                if (!res.ok) throw new Error(payload.message || `Request failed (${res.status})`);
-                return payload;
-            }
 
-            async function login(event) {
-                event.preventDefault();
-                const form = event.target;
-                const formData = new FormData(form);
-                try {
-                    await postJSON("/api/login", {
-                        username: formData.get("loginUname"),
-                        password: formData.get("loginPsw"),
-                    });
-                    window.location.href = "index.html";
-                } catch (error) {
-                    console.error("Login error:", error);
-                    alert("Login failed: " + error.message);
-                }
-            }
+    <main>
+      <div class="auth-wrap">
+        <section class="auth-card">
+          <h2>Welcome back</h2>
+          <p class="subtitle">Log in to continue your journey.</p>
+          <form onsubmit="login(event)" autocomplete="on">
+            <div class="field">
+              <label for="loginUname">Username</label>
+              <input id="loginUname" name="loginUname" type="text" placeholder="your username" required autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="loginPsw">Password</label>
+              <input id="loginPsw" name="loginPsw" type="password" placeholder="••••••••" required autocomplete="current-password" />
+            </div>
+            <div class="row-between">
+              <label class="checkbox">
+                <input type="checkbox" name="remember" checked />
+                <span>Remember me</span>
+              </label>
+              <a href="#">Forgot password?</a>
+            </div>
+            <div id="loginFlash" class="flash"></div>
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+          </form>
+        </section>
 
-            async function register(event) {
-                event.preventDefault();
-                const form = event.target;
-                const formData = new FormData(form);
-                try {
-                    await postJSON("/api/register", {
-                        username: formData.get("registerUname"),
-                        password: formData.get("registerPsw"),
-                    });
-                    alert("Registration Successful!");
-                    document.getElementById("registerModal").style.display = "none";
-                } catch (error) {
-                    console.error("Registration error:", error);
-                    alert("Registration failed: " + error.message);
-                }
-            }
+        <section class="auth-card">
+          <h2>Create an account</h2>
+          <p class="subtitle">Start learning in under a minute.</p>
+          <form onsubmit="register(event)" autocomplete="on">
+            <div class="field">
+              <label for="registerUname">Username</label>
+              <input id="registerUname" name="registerUname" type="text" placeholder="pick a username" required autocomplete="username" />
+            </div>
+            <div class="field">
+              <label for="registerPsw">Password</label>
+              <input id="registerPsw" name="registerPsw" type="password" placeholder="at least 6 characters" required minlength="6" autocomplete="new-password" />
+            </div>
+            <div id="registerFlash" class="flash"></div>
+            <button type="submit" class="btn btn-ghost btn-block">Create account</button>
+          </form>
+          <div class="divider"></div>
+          <p class="subtitle" style="margin: 0; font-size: 0.85rem;">
+            By creating an account you agree to our terms of service.
+          </p>
+        </section>
+      </div>
+    </main>
+  </div>
 
-            var loginModal = document.getElementById("loginModal");
-            var registerModal = document.getElementById("registerModal");
-            window.onclick = function (event) {
-                if (event.target == loginModal) loginModal.style.display = "none";
-                if (event.target == registerModal) registerModal.style.display = "none";
-            };
-        </script>
-    </center>
-    </body>
+  <script>
+    const API_BASE = window.location.origin.startsWith('http')
+      ? window.location.origin
+      : 'http://localhost:9999';
+
+    async function postJSON(path, data) {
+      const res = await fetch(API_BASE + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const text = await res.text();
+      let payload = {};
+      try { payload = text ? JSON.parse(text) : {}; } catch (_) { payload = { message: text }; }
+      if (!res.ok) throw new Error(payload.message || `Request failed (${res.status})`);
+      return payload;
+    }
+
+    function setFlash(id, type, message) {
+      const el = document.getElementById(id);
+      el.className = `flash ${type} show`;
+      el.textContent = message;
+    }
+
+    async function login(event) {
+      event.preventDefault();
+      const form = event.target;
+      const data = {
+        username: form.loginUname.value.trim(),
+        password: form.loginPsw.value,
+      };
+      try {
+        await postJSON('/login', data);
+        setFlash('loginFlash', 'success', 'Login successful — redirecting…');
+        setTimeout(() => { window.location.href = 'index.html'; }, 600);
+      } catch (error) {
+        setFlash('loginFlash', 'error', error.message || 'Login failed');
+      }
+    }
+
+    async function register(event) {
+      event.preventDefault();
+      const form = event.target;
+      const data = {
+        username: form.registerUname.value.trim(),
+        password: form.registerPsw.value,
+      };
+      try {
+        await postJSON('/register', data);
+        setFlash('registerFlash', 'success', 'Account created — log in on the left.');
+        form.reset();
+      } catch (error) {
+        setFlash('registerFlash', 'error', error.message || 'Registration failed');
+      }
+    }
+  </script>
+</body>
 </html>
