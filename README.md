@@ -71,11 +71,20 @@ connected, then every deployment blocks — CLI ones included, and with no error
 code in the deployments list. The reason appears only on the individual
 deployment record.
 
-If it happens, either add the commit-author email to the Vercel account, or set
-the repository's author to one already on it:
+The match is on the **GitHub account**, not the email address — adding the
+commit-author email to the Vercel account does not clear it. The block record
+names the offending account by id:
+
+```
+seatBlock: { blockCode: "TEAM_ACCESS_REQUIRED", gitUserId: <n>, gitProvider: "github" }
+```
+
+Adding that account as a Vercel contributor requires a paid plan. On Hobby the
+free fix is to author commits as the GitHub account the Vercel project is linked
+to:
 
 ```bash
-git config user.email <email-on-the-vercel-account>
+git config user.email <id>+<login>@users.noreply.github.com
 ```
 
 As a last resort, deploying from a copy of the tree with `.git` removed carries
