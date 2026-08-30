@@ -130,8 +130,8 @@ export default function VeyraPage() {
 
       <main className="vy-shell">
         <p className="vy-sim">
-          Simulated environment. No institution is connected, no credentials are held, and the
-          executor is a stub — approving an action here moves nothing.
+          <strong>Demonstration.</strong>
+          <span>No institution is connected and no money can move.</span>
         </p>
 
         {tab === 'home' && <Home v={v} snap={snap} recs={recs} onReview={openReview} />}
@@ -176,6 +176,7 @@ function Home({ v, snap, recs, onReview }) {
   const monthly = monthlyNetCashFlowCents(v.twin);
   const health = planHealth(demoPlan, v.twin, v.constitution);
   const blocked = [...v.actions.values()].filter((r) => r.state === STATE.BLOCKED);
+  const [primary, ...rest] = recs;
 
   return (
     <>
@@ -186,32 +187,30 @@ function Home({ v, snap, recs, onReview }) {
           : 'A few things need your attention.'}
       </h1>
 
-      <div className="vy-grid-2">
-        <div className="vy-card">
-          <div className="vy-card-label">Net worth</div>
-          <div className="vy-figure">{fmt(snap.netWorthCents, { cents: false })}</div>
-          <div className="vy-sub">
-            <span className={monthly >= 0 ? 'vy-pos' : ''}>{fmt(monthly, { sign: monthly >= 0, cents: false })}</span>
-            {' '}projected monthly net
+      {/* The one number that answers "how am I doing?". It gets the page, not a tile. */}
+      <section className="vy-hero">
+        <div className="vy-hero-label">Net worth</div>
+        <div className="vy-hero-value">{fmt(snap.netWorthCents, { cents: false })}</div>
+        <div className="vy-hero-sub">
+          <span className={monthly >= 0 ? 'vy-pos' : ''}>
+            {fmt(monthly, { sign: monthly >= 0, cents: false })}
+          </span>{' '}
+          projected monthly net
+        </div>
+      </section>
+
+      <div className="vy-card">
+        <div className="vy-spread">
+          <div>
+            <div className="vy-card-label" style={{ marginBottom: 6 }}>Safe to deploy</div>
+            <div className="vy-figure">{fmt(snap.safeToDeploy.amountCents, { cents: false })}</div>
           </div>
+          <button className="vy-link" onClick={() => setShowWhy((x) => !x)} aria-expanded={showWhy}>
+            {showWhy ? 'Hide' : 'Why?'}
+          </button>
         </div>
 
-        <div className="vy-card">
-          <div className="vy-card-label">Safe to deploy</div>
-          <div className="vy-figure">{fmt(snap.safeToDeploy.amountCents, { cents: false })}</div>
-          <div className="vy-sub">
-            <button className="vy-link" onClick={() => setShowWhy((s) => !s)} aria-expanded={showWhy}>
-              {showWhy ? 'Hide' : 'See why'}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {showWhy && (
-        <div className="vy-card">
-          <div className="vy-card-label">
-            Why {fmt(snap.safeToDeploy.amountCents, { cents: false })}?
-          </div>
+        {showWhy && (
           <div className="vy-trace">
             {snap.safeToDeploy.trace.map((line) => (
               <div className="vy-trace-row" key={line.label}>
@@ -227,65 +226,128 @@ function Home({ v, snap, recs, onReview }) {
               <span className="vy-trace-num">{fmt(snap.safeToDeploy.amountCents, { cents: false })}</span>
             </div>
           </div>
+        )}
+      </div>
+
+      {/* One recommendation gets the emphasis. Anything else is a quiet list. */}
+      {primary ? (
+        <div className="vy-card vy-primary-card">
+          <div className="vy-card-label">Next best move</div>
+          <div style={{ fontSize: 'var(--t-body)', fontWeight: 540, marginBottom: 4 }}>{primary.what}</div>
+          <div className="vy-sub" style={{ marginBottom: 16 }}>{primary.impact}</div>
+          <button className="vy-btn vy-btn-primary" onClick={() => onReview(primary)}>Review</button>
+        </div>
+      ) : (
+        <div className="vy-card">
+          <div className="vy-card-label">Next best move</div>
+          <p className="vy-sub" style={{ margin: 0 }}>
+            Nothing to do right now. Veyra will tell you when that changes.
+          </p>
+        </div>
+      )}
+
+      {rest.length > 0 && (
+        <div className="vy-card">
+          <div className="vy-card-label">Also worth considering</div>
+          {rest.map((r) => (
+            <div className="vy-item" key={r.id}>
+              <span>
+                <span className="vy-item-title">{r.what}</span>
+                <span className="vy-item-sub">{r.impact}</span>
+              </span>
+              <button className="vy-btn" onClick={() => onReview(r)}>Review</button>
+            </div>
+          ))}
         </div>
       )}
 
       <div className="vy-card">
-        <div className="vy-card-label">Next best move</div>
-        {recs.length === 0 && <p className="vy-sub">Nothing to do right now. Veyra will tell you when that changes.</p>}
-        {recs.map((r, i) => (
-          <div key={r.id} style={{ paddingTop: i ? 14 : 0, marginTop: i ? 14 : 0, borderTop: i ? '1px solid var(--line)' : 'none' }}>
-            <div className="vy-spread">
-              <div>
-                <div style={{ fontWeight: 500 }}>{r.what}</div>
-                <div className="vy-sub">{r.impact}</div>
-              </div>
-              <button className="vy-btn" onClick={() => onReview(r)}>Review</button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="vy-card">
         <div className="vy-card-label">Autopilot</div>
-        <div className="vy-spread" style={{ marginBottom: 12 }}>
+        <div className="vy-item">
+          <span>
+            <span className="vy-item-title">{demoPlan.name}</span>
+            <span className="vy-item-sub">{health.detail}</span>
+          </span>
           <span className="vy-status">
             <span className={`vy-dot ${health.status === PLAN_HEALTH.ON_TRACK ? 'vy-dot-ok' : health.status === PLAN_HEALTH.PAUSED ? 'vy-dot-idle' : 'vy-dot-review'}`} />
-            {demoPlan.name} — {health.headline}
+            {health.headline}
           </span>
-          <span className="vy-sub">{fmt(demoPlan.monthlyContributionCents, { cents: false })}/mo</span>
         </div>
-        <div className="vy-sub">{health.detail}</div>
-        <div className="vy-sub" style={{ marginTop: 10 }}>
-          Emergency reserve — {snap.reserve.fullyFunded ? 'fully funded' : `${snap.reserve.monthsFunded.toFixed(1)} of ${v.constitution.reserveMonths} months`}
+        <div className="vy-item">
+          <span>
+            <span className="vy-item-title">Emergency reserve</span>
+            <span className="vy-item-sub">
+              {snap.reserve.monthsFunded.toFixed(1)} of {v.constitution.reserveMonths} months of essential expenses
+            </span>
+          </span>
+          <span className="vy-status">
+            <span className={`vy-dot ${snap.reserve.fullyFunded ? 'vy-dot-ok' : 'vy-dot-review'}`} />
+            {snap.reserve.fullyFunded ? 'Funded' : 'Below target'}
+          </span>
         </div>
       </div>
 
+      <Goals goals={v.twin.goals} />
       <Readiness readiness={snap.readiness} />
     </>
+  );
+}
+
+function Goals({ goals }) {
+  if (!goals?.length) return null;
+  return (
+    <div className="vy-card">
+      <div className="vy-card-label">Goals</div>
+      {goals.map((g) => {
+        const pct = Math.min(100, Math.round((g.currentCents / Math.max(g.targetCents, 1)) * 100));
+        return (
+          <div className="vy-goal" key={g.id}>
+            <div className="vy-goal-head">
+              <span className="vy-item-title">{g.name}</span>
+              <span className="vy-metric">{pct}%</span>
+            </div>
+            <div className="vy-meter"><div className="vy-meter-fill" style={{ width: `${pct}%` }} /></div>
+            <div className="vy-item-sub" style={{ marginTop: 6 }}>
+              {fmt(g.currentCents, { cents: false })} of {fmt(g.targetCents, { cents: false })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
 /* ------------------------------------------------------------- §38 Score */
 
 function Readiness({ readiness }) {
+  const [open, setOpen] = useState(false);
   return (
     <div className="vy-card">
       <div className="vy-spread">
-        <div className="vy-card-label">Financial readiness</div>
-        <div className="vy-figure-sm">{readiness.overall}</div>
-      </div>
-      {readiness.dimensions.map((d) => (
-        <div key={d.id} style={{ marginTop: 12 }}>
-          <div className="vy-spread" style={{ marginBottom: 5 }}>
-            <span style={{ fontSize: 13 }}>{d.label}</span>
-            <span style={{ fontSize: 13, fontFamily: 'var(--mono)' }}>{d.score}</span>
-          </div>
-          <div className="vy-meter"><div className="vy-meter-fill" style={{ width: `${d.score}%` }} /></div>
-          <div className="vy-sub" style={{ fontSize: 12 }}>{d.explanation}</div>
+        <div>
+          <div className="vy-card-label" style={{ marginBottom: 6 }}>Financial readiness</div>
+          <div className="vy-figure-sm">{readiness.overall}</div>
         </div>
-      ))}
-      <p className="vy-sub" style={{ marginTop: 16, fontSize: 12 }}>{readiness.disclaimer}</p>
+        <button className="vy-link" onClick={() => setOpen((x) => !x)} aria-expanded={open}>
+          {open ? 'Hide' : 'Breakdown'}
+        </button>
+      </div>
+
+      {open && (
+        <div style={{ marginTop: 18 }}>
+          {readiness.dimensions.map((d) => (
+            <div key={d.id} style={{ marginBottom: 14 }}>
+              <div className="vy-spread" style={{ marginBottom: 5 }}>
+                <span style={{ fontSize: 'var(--t-small)' }}>{d.label}</span>
+                <span className="vy-metric" style={{ fontSize: 'var(--t-small)' }}>{d.score}</span>
+              </div>
+              <div className="vy-meter"><div className="vy-meter-fill" style={{ width: `${d.score}%` }} /></div>
+              <div className="vy-item-sub" style={{ marginTop: 5 }}>{d.explanation}</div>
+            </div>
+          ))}
+          <p className="vy-sub" style={{ fontSize: 'var(--t-micro)' }}>{readiness.disclaimer}</p>
+        </div>
+      )}
     </div>
   );
 }
