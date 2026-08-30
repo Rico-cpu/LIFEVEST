@@ -84,6 +84,11 @@ export default function VeyraPage() {
     rerender();
   }
 
+  async function acknowledge(disclosureId) {
+    await v.acknowledge(disclosureId, HUMAN, 'approval-card');
+    rerender();
+  }
+
   async function confirmApproval() {
     const rec = v.actions.get(review.actionId);
     const opts = rec.decision.verdict === VERDICT.REQUIRE_REAUTH ? { reauthenticatedAt: Date.now() } : {};
@@ -137,6 +142,11 @@ export default function VeyraPage() {
         {tab === 'activity' && <Activity v={v} />}
 
         <footer className="vy-foot">
+          <p style={{ margin: '0 0 8px' }}>
+            <a href="/legal">Terms, privacy &amp; disclosures</a> · Veyra is a demonstration.
+            It is not a bank, broker-dealer, or registered investment adviser, gives no
+            investment advice, and cannot move money.
+          </p>
           Twin <code>{snap.twinVersion}</code> · Constitution <code>{snap.constitutionVersion}</code>.
           Every figure above is computed by <code>lib/veyra</code> and covered by its test suite.
         </footer>
@@ -147,6 +157,8 @@ export default function VeyraPage() {
           record={record}
           step={review.step}
           twin={v.twin}
+          disclosures={v.disclosuresFor(record.action)}
+          onAcknowledge={acknowledge}
           onAdvance={() => setReview({ ...review, step: 'confirm' })}
           onConfirm={confirmApproval}
           onDecline={declineAction}
@@ -708,7 +720,7 @@ function frictionReasons(record) {
   return [...new Set([...fromPolicy, ...fromRisk])];
 }
 
-function ApprovalModal({ record, step, twin, onAdvance, onConfirm, onDecline, onClose }) {
+function ApprovalModal({ record, step, twin, disclosures, onAcknowledge, onAdvance, onConfirm, onDecline, onClose }) {
   const blocked = record.state === STATE.BLOCKED;
   const done = step === 'done';
   const friction = FRICTION_COPY[record.risk.friction];
@@ -764,12 +776,16 @@ function ApprovalModal({ record, step, twin, onAdvance, onConfirm, onDecline, on
                 </div>
               ))}
 
-              {isInvestment && (
-                <div className="vy-notice vy-notice-review" style={{ marginTop: 16 }}>
-                  <div className="vy-notice-title">Investment risk</div>
-                  Investments can lose value. Past performance does not guarantee future results.
-                  Veyra does not guarantee returns.
-                </div>
+              {disclosures.required.length > 0 && (
+                <>
+                  <div className="vy-card-label" style={{ marginTop: 18 }}>Disclosures</div>
+                  {disclosures.required.map((d) => (
+                    <div key={d.id} className="vy-notice vy-notice-review" style={{ marginTop: 10 }}>
+                      <div className="vy-notice-title">{d.title}</div>
+                      {d.body}
+                    </div>
+                  ))}
+                </>
               )}
             </>
           )}
@@ -790,6 +806,36 @@ function ApprovalModal({ record, step, twin, onAdvance, onConfirm, onDecline, on
               )}
             </div>
           )}
+
+          {step === 'confirm' && !blocked && disclosures.required.map((d) => {
+            const explicit = d.acknowledgement === 'explicit';
+            const done = !disclosures.outstanding.some((o) => o.id === d.id);
+            return (
+              <div key={d.id} className="vy-ack">
+                {explicit ? (
+                  <label className="vy-ack-row">
+                    <input
+                      type="checkbox"
+                      checked={done}
+                      disabled={done}
+                      onChange={() => onAcknowledge(d.id)}
+                    />
+                    <span>
+                      <strong>{d.title}</strong>
+                      <span className="vy-ack-body">{d.body}</span>
+                    </span>
+                  </label>
+                ) : (
+                  <div className="vy-ack-row vy-ack-passive">
+                    <span>
+                      <strong>{d.title}</strong>
+                      <span className="vy-ack-body">{d.body}</span>
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
           {done && (
             <>
@@ -823,6 +869,8 @@ function ApprovalModal({ record, step, twin, onAdvance, onConfirm, onDecline, on
               <button
                 className={`vy-btn ${record.risk.friction === 'final_confirmation' ? 'vy-btn-risk' : 'vy-btn-primary'}`}
                 onClick={onConfirm}
+                disabled={disclosures.outstanding.length > 0}
+                title={disclosures.outstanding.length > 0 ? 'Acknowledge the disclosures above to continue' : undefined}
               >
                 {record.action.weakensProtection ? 'Disable' : 'Authorize'}
               </button>

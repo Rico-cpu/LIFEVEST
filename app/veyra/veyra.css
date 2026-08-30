@@ -245,3 +245,17 @@
 /* Pre-hydration skeleton. A class rather than a style attribute, so the
    server-rendered document carries no inline styles. */
 .vy-boot { margin-top: 48px; }
+
+/* Disclosure acknowledgement. Each explicit disclosure is a separate,
+   deliberate act — never one blanket "I agree" covering everything, because a
+   single checkbox proves nothing about what was actually read. */
+.vy-ack { margin-top: 10px; }
+.vy-ack-row {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px;
+  align-items: start; font-size: 13px; cursor: pointer;
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--surface-2);
+}
+.vy-ack-row input { margin-top: 3px; accent-color: var(--accent); }
+.vy-ack-passive { cursor: default; grid-template-columns: 1fr; }
+.vy-ack-body { display: block; color: var(--ink-2); margin-top: 4px; }
