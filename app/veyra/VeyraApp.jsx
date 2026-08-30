@@ -28,6 +28,29 @@ import { statementRows, statementSheets, toCSV, toWorkbookXML, filenameFor, down
 const HUMAN = { kind: 'user', id: 'u_demo' };
 const ASSISTANT = { kind: 'ai', id: 'assistant' };
 
+/**
+ * Nav icons. Inline stroke SVGs rather than an icon package: six glyphs do not
+ * justify a dependency, and drawing them here keeps weight and stroke matched
+ * to the type.
+ */
+const Icon = {
+  home: 'M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5',
+  plan: 'M3 19h18M6 19v-7M11 19V8M16 19v-4M21 19V5',
+  explore: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM15.5 8.5l-2 5-5 2 2-5 5-2Z',
+  statements: 'M6 3h8l4 4v14H6V3ZM14 3v4h4M9 12h6M9 16h6',
+  rules: 'M12 3l7 3v6c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3Z',
+  activity: 'M3 12h4l3 7 4-16 3 9h4',
+};
+
+function NavIcon({ name }) {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"
+      stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d={Icon[name]} />
+    </svg>
+  );
+}
+
 const TABS = [
   { id: 'home', label: 'Home' },
   { id: 'plan', label: 'Plan' },
@@ -151,6 +174,22 @@ export default function VeyraPage() {
           Every figure above is computed by <code>lib/veyra</code> and covered by its test suite.
         </footer>
       </main>
+
+      {/* Mobile primary navigation. The top strip hides below 700px so there is
+          never a second, competing nav on screen at the same time. */}
+      <nav className="vy-bottomnav" aria-label="Primary">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            className="vy-bottomnav-item"
+            aria-current={tab === t.id}
+            onClick={() => { setTab(t.id); window.scrollTo({ top: 0 }); }}
+          >
+            <NavIcon name={t.id} />
+            <span className="vy-bottomnav-label">{t.label}</span>
+          </button>
+        ))}
+      </nav>
 
       {record && (
         <ApprovalModal

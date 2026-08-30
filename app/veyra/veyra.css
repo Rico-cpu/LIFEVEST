@@ -380,3 +380,63 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* --------------------------------------------------- mobile bottom nav */
+
+/* Hidden on desktop, where the top strip is the navigation. Never both. */
+.vy-bottomnav { display: none; }
+
+@media (max-width: 700px) {
+  .vy-tabs { display: none; }
+
+  .vy-bottomnav {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: saturate(180%) blur(16px);
+    border-top: 1px solid var(--line);
+    /* Clear the iOS home indicator rather than sitting under it. */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .vy-bottomnav-item {
+    font: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--ink-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    /* Comfortably above the 44px minimum touch target. */
+    min-height: 54px;
+    padding: 7px 2px 8px;
+    transition: color 120ms ease;
+  }
+  .vy-bottomnav-item[aria-current="true"] { color: var(--accent); }
+  .vy-bottomnav-item:active { background: var(--surface-2); }
+
+  .vy-bottomnav-label {
+    font-size: 10px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    /* Six labels share the width; the longest must not wrap or clip. */
+    max-width: 100%;
+  }
+
+  /* Leave room so the last card is never trapped under the bar. */
+  .vy-shell { padding-bottom: 96px; }
+}
+
+/* Very narrow phones: drop the labels rather than let them collide. The
+   icons plus the active-colour cue still identify the section. */
+@media (max-width: 349px) {
+  .vy-bottomnav-label { display: none; }
+  .vy-bottomnav-item { min-height: 50px; }
+}
