@@ -1,0 +1,4 @@
+/* Global reset. Lives in a stylesheet rather than a `style` attribute on
+   <body> so the document contains no inline styles for CSP to allow. */
+html, body { margin: 0; padding: 0; }
+body { background: #0d0d0c; }

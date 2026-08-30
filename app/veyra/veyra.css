@@ -1,12 +1,9 @@
-/**
- * Blueprint §19–§21 — the design language, as one stylesheet.
- *
- * Calm, precise, hierarchical, restrained. Near-black and white, muted
- * neutrals, exactly one accent, and colour used only semantically:
- * green = positive, amber = review, red = risk. Nothing is coloured for
- * decoration. Motion communicates state and nothing else.
- */
-export const styles = `
+/* Veyra design language — blueprint §19–§21.
+   Calm, precise, hierarchical, restrained. Near-black and white, muted
+   neutrals, exactly one accent, colour used only semantically.
+
+   Served as a real stylesheet rather than injected inline, so the app can
+   ship a Content-Security-Policy without `style-src 'unsafe-inline'`. */
 :root {
   --bg: #fbfbfa;
   --surface: #ffffff;
@@ -244,4 +241,7 @@ export const styles = `
 @media (prefers-reduced-motion: reduce) {
   .vy *, .vy *::before, .vy *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
-`;
+
+/* Pre-hydration skeleton. A class rather than a style attribute, so the
+   server-rendered document carries no inline styles. */
+.vy-boot { margin-top: 48px; }
