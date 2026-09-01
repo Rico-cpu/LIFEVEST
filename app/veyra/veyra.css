@@ -1,77 +1,96 @@
-/* Veyra design language.
-   Calm, precise, hierarchical, restrained. Near-black and white, muted
-   neutrals, exactly one accent, colour used only semantically.
+/* VEYRA — premium financial OS theme.
+   Complex financial intelligence should feel effortless to use.
 
-   Served as a real stylesheet rather than injected inline, so the app can ship
-   a Content-Security-Policy without `style-src 'unsafe-inline'`. */
+   Served as a real stylesheet rather than injected inline, so the app ships a
+   Content-Security-Policy with no `style-src 'unsafe-inline'`.
+
+   Typography does the hierarchy work. Boxes are used sparingly, colour is used
+   only to mean something, and motion only to communicate state. */
 
 :root {
-  /* Surfaces run light → dark in three steps only. More than three and the
-     interface starts to look like a dashboard rather than a document. */
-  --bg: #fcfcfb;
+  /* Surfaces. Warm off-white, not clinical white. */
+  --bg: #f7f7f5;
   --surface: #ffffff;
-  --surface-2: #f5f5f3;
-  --line: #e8e8e4;
-  --line-strong: #d2d2cc;
+  --surface-2: #f0f0ec;
+  --line: #e7e7e3;
+  --line-strong: #d6d6d0;
 
-  --ink: #16160f;
-  --ink-2: #5c5c54;
-  --ink-3: #909086;
+  --ink: #171717;
+  --ink-2: #737373;
+  --ink-3: #9b9b96;
 
-  --accent: #2b5c4d;
+  /* One accent, used sparingly: primary actions, positive states, active nav,
+     key progress. Never decoration. */
+  --accent: #176b5b;
   --accent-ink: #ffffff;
-  --accent-wash: #edf3f0;
+  --accent-wash: #edf4f1;
+  --accent-line: #cfe1db;
 
-  --positive: #2b6a45;
+  --positive: #176b5b;
   --review: #8a6116;
   --review-wash: #fdf7ea;
-  --risk: #98302f;
+  --risk: #9b2c2c;
   --risk-wash: #fcf1f0;
 
-  --scrim: rgba(18, 18, 14, 0.4);
+  --scrim: rgba(23, 23, 23, 0.32);
+  --shadow-modal: 0 24px 64px rgba(23, 23, 23, 0.18);
 
-  /* One spacing scale. Every gap is a step on it. */
-  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
-  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  /* 8px system. --s0 is the only sub-step, for optical adjustments. */
+  --s0: 4px;
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 64px;
 
-  /* One type scale. */
-  --t-hero: clamp(40px, 9vw, 56px);
-  --t-figure: 30px;
+  --t-display: clamp(38px, 8vw, 52px);
+  --t-figure: 28px;
   --t-lead: 19px;
   --t-body: 15px;
   --t-small: 13.5px;
   --t-micro: 11.5px;
 
   --radius: 14px;
-  --radius-sm: 9px;
+  --radius-sm: 10px;
+  --radius-xs: 7px;
+
+  --nav-w: 216px;
+  --dur-fast: 160ms;
+  --dur-mid: 240ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, monospace;
-  --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+  --sans: var(--font-inter), ui-sans-serif, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Inter, system-ui, sans-serif;
 }
 
+/* Institutional, not gaming. Low-chroma surfaces, accent kept restrained. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0c0c0b;
-    --surface: #151514;
-    --surface-2: #1c1c1a;
-    --line: #262623;
-    --line-strong: #383833;
+    --bg: #101111;
+    --surface: #171918;
+    --surface-2: #1e211f;
+    --line: #292c2a;
+    --line-strong: #3a3e3c;
 
-    --ink: #f4f4f0;
-    --ink-2: #a5a59c;
-    --ink-3: #6f6f67;
+    --ink: #f5f5f2;
+    --ink-2: #a3a6a3;
+    --ink-3: #6f736f;
 
-    --accent: #86c2ac;
-    --accent-ink: #0c0c0b;
-    --accent-wash: #16241e;
+    --accent: #4aa38c;
+    --accent-ink: #0d1110;
+    --accent-wash: #16241f;
+    --accent-line: #244037;
 
-    --positive: #79b48d;
-    --review: #d6ab5c;
-    --review-wash: #231e11;
-    --risk: #dd8281;
-    --risk-wash: #281515;
+    --positive: #4aa38c;
+    --review: #cfa458;
+    --review-wash: #221d12;
+    --risk: #d97f7e;
+    --risk-wash: #241616;
 
-    --scrim: rgba(0, 0, 0, 0.7);
+    --scrim: rgba(0, 0, 0, 0.68);
+    --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -84,84 +103,98 @@
   font-size: var(--t-body);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv05" 1;
 }
-.vy-shell { max-width: 660px; margin: 0 auto; padding: 0 var(--s5) var(--s8); }
 
-/* Numbers must be scannable: same-width digits so columns align and figures
-   don't shift as values change. */
+/* Financial numbers are Veyra's visual language: same-width digits so columns
+   align and figures don't jitter as values change. */
 .vy-figure, .vy-hero-value, .vy-figure-sm, .vy-trace-num, .vy-table td, .vy-metric {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
-/* ---------------------------------------------------------------- chrome */
+/* ------------------------------------------------------------------ shell */
 
 .vy-topbar {
   position: sticky; top: 0; z-index: 40;
-  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: saturate(180%) blur(14px);
   border-bottom: 1px solid var(--line);
 }
 .vy-topbar-in {
-  max-width: 660px; margin: 0 auto; padding: var(--s3) var(--s5);
-  display: flex; align-items: center; gap: var(--s2) var(--s4); flex-wrap: wrap;
+  display: flex; align-items: center; gap: var(--s2);
+  padding: var(--s2) var(--s3);
+  max-width: calc(var(--nav-w) + 720px); margin: 0 auto;
 }
 .vy-wordmark {
-  font-weight: 620; letter-spacing: 0.2em; font-size: 12.5px;
-  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: var(--s1);
+  font-weight: 600; letter-spacing: 0.16em; font-size: 12.5px;
+  text-transform: uppercase; color: var(--ink);
 }
+.vy-mark { color: var(--accent); flex: none; }
 .vy-chip {
-  font-size: var(--t-micro); font-family: var(--mono); color: var(--ink-2);
-  border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px;
-  white-space: nowrap;
+  font-size: var(--t-micro); color: var(--ink-2);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px;
+  white-space: nowrap; margin-left: auto;
 }
 
-.vy-tabs {
-  display: flex; gap: 2px; margin-left: auto;
-  overflow-x: auto; max-width: 100%;
-  scrollbar-width: none; -ms-overflow-style: none;
+/* One nav element. Sidebar beside the content on desktop, bottom bar on
+   mobile — never two navs competing on the same screen. */
+.vy-layout {
+  display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr);
+  gap: var(--s5);
+  max-width: calc(var(--nav-w) + 720px); margin: 0 auto;
+  padding: 0 var(--s3);
 }
-.vy-tabs::-webkit-scrollbar { display: none; }
-.vy-tab {
-  font: inherit; font-size: var(--t-small); background: none; border: 0;
-  cursor: pointer; color: var(--ink-3); padding: 7px 11px;
-  border-radius: 999px; white-space: nowrap; text-decoration: none;
-  transition: color 120ms ease, background 120ms ease;
+.vy-nav {
+  display: flex; flex-direction: column; gap: 2px;
+  position: sticky; top: 76px; align-self: start;
+  padding-top: var(--s5);
 }
-.vy-tab:hover { color: var(--ink); }
-.vy-tab[aria-current="true"] { color: var(--ink); background: var(--surface-2); font-weight: 540; }
+.vy-nav-item {
+  font: inherit; font-size: var(--t-small); font-weight: 500;
+  display: flex; align-items: center; gap: var(--s1);
+  background: none; border: 0; cursor: pointer; text-align: left;
+  color: var(--ink-2); padding: 9px 12px; border-radius: var(--radius-xs);
+  min-height: 40px; width: 100%;
+  transition: color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.vy-nav-item:hover { color: var(--ink); background: var(--surface-2); }
+.vy-nav-item[aria-current="true"] { color: var(--accent); background: var(--accent-wash); }
+.vy-nav-icon { flex: none; }
+.vy-nav-label { white-space: nowrap; }
+
+.vy-shell { padding: 0 0 var(--s6); min-width: 0; }
 
 .vy-sim {
   font-size: var(--t-small); color: var(--ink-2); background: var(--surface-2);
-  border-radius: var(--radius-sm); padding: 10px var(--s3);
-  margin: var(--s5) 0 0; display: flex; gap: var(--s2); align-items: baseline;
+  border-radius: var(--radius-sm); padding: 10px var(--s2);
+  margin: var(--s5) 0 0; display: flex; gap: var(--s1); flex-wrap: wrap;
 }
-.vy-sim strong { color: var(--ink); font-weight: 560; }
+.vy-sim strong { color: var(--ink); font-weight: 600; }
 
 /* --------------------------------------------------------------- headings */
 
 .vy-greeting {
-  margin: var(--s7) 0 var(--s1); font-size: var(--t-micro); color: var(--ink-3);
-  letter-spacing: 0.09em; text-transform: uppercase; font-weight: 560;
+  margin: var(--s5) 0 var(--s0); font-size: var(--t-micro); color: var(--ink-3);
+  letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
 }
 .vy-headline {
-  font-size: var(--t-lead); font-weight: 500; margin: 0 0 var(--s6);
-  letter-spacing: -0.012em; line-height: 1.35; color: var(--ink);
-  max-width: 32ch;
+  font-size: var(--t-lead); font-weight: 500; margin: 0 0 var(--s4);
+  letter-spacing: -0.014em; line-height: 1.35; max-width: 34ch;
 }
-.vy-boot { margin-top: var(--s7); }
+.vy-boot { margin-top: var(--s5); }
 
-/* The hero figure sits on the page, not in a box. Giving the most important
-   number a card would make it one tile among several. */
-.vy-hero { margin: 0 0 var(--s7); }
+/* The number that answers "how am I doing?" sits on the page, not in a tile.
+   Putting it in a card would make it one of several equals. */
+.vy-hero { margin: 0 0 var(--s5); }
 .vy-hero-label {
-  font-size: var(--t-micro); letter-spacing: 0.09em; text-transform: uppercase;
-  color: var(--ink-3); font-weight: 560; margin-bottom: var(--s2);
+  font-size: var(--t-micro); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 600; margin-bottom: var(--s1);
 }
 .vy-hero-value {
-  font-size: var(--t-hero); font-weight: 560; letter-spacing: -0.032em;
-  line-height: 1; margin-bottom: var(--s2);
+  font-size: var(--t-display); font-weight: 600; letter-spacing: -0.034em;
+  line-height: 1; margin-bottom: var(--s1);
 }
 .vy-hero-sub { font-size: var(--t-small); color: var(--ink-2); }
 
@@ -169,97 +202,115 @@
 
 .vy-card {
   background: var(--surface); border: 1px solid var(--line);
-  border-radius: var(--radius); padding: var(--s5); margin-bottom: var(--s3);
+  border-radius: var(--radius); padding: var(--s3); margin-bottom: var(--s2);
 }
 .vy-card-label {
-  font-size: var(--t-micro); letter-spacing: 0.09em; text-transform: uppercase;
-  color: var(--ink-3); margin-bottom: var(--s3); font-weight: 560;
+  font-size: var(--t-micro); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: var(--s2); font-weight: 600;
 }
-.vy-figure { font-size: var(--t-figure); font-weight: 560; letter-spacing: -0.022em; }
-.vy-figure-sm { font-size: 21px; font-weight: 560; }
-.vy-metric { font-size: var(--t-body); font-weight: 560; }
-.vy-sub { font-size: var(--t-small); color: var(--ink-2); margin-top: var(--s1); }
+.vy-figure { font-size: var(--t-figure); font-weight: 600; letter-spacing: -0.024em; }
+.vy-figure-sm { font-size: 21px; font-weight: 600; }
+.vy-metric { font-size: var(--t-body); font-weight: 600; }
+.vy-sub { font-size: var(--t-small); color: var(--ink-2); margin-top: var(--s0); }
 .vy-pos { color: var(--positive); }
 
-/* A single prominent action. One per screen wherever possible. */
-.vy-primary-card {
-  background: var(--accent-wash);
-  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
-}
+.vy-primary-card { background: var(--accent-wash); border-color: var(--accent-line); }
 
 .vy-link {
-  font: inherit; font-size: var(--t-small); background: none; border: 0; padding: 0;
+  font: inherit; font-size: var(--t-small); background: none; border: 0;
   color: var(--accent); cursor: pointer; text-decoration: underline;
   text-underline-offset: 3px; text-decoration-thickness: 1px;
+  /* WCAG 2.2 AA (2.5.8) wants a 24px minimum target. The padding grows the hit
+     area and the negative margin cancels its effect on layout, so an inline
+     text control stays inline while still being comfortably tappable. */
+  display: inline-flex; align-items: center; min-height: 24px;
+  padding: 4px 3px; margin: -4px -3px;
 }
 .vy-link:hover { opacity: 0.72; }
 
+.vy-foot a {
+  display: inline-flex; align-items: center; min-height: 24px;
+  padding: 4px 3px; margin: -4px -3px;
+}
+
 /* ----------------------------------------------------- calculation traces */
 
-.vy-trace { margin-top: var(--s3); }
+.vy-trace { margin-top: var(--s2); }
 .vy-trace-row {
-  display: grid; grid-template-columns: 1fr auto; gap: var(--s3);
+  display: grid; grid-template-columns: 1fr auto; gap: var(--s2);
   padding: 9px 0; font-size: var(--t-small); align-items: baseline;
 }
 .vy-trace-row + .vy-trace-row { border-top: 1px solid var(--line); }
 .vy-trace-src { display: block; font-size: var(--t-micro); color: var(--ink-3); margin-top: 1px; }
 .vy-trace-num { font-family: var(--mono); white-space: nowrap; }
 .vy-trace-total {
-  display: grid; grid-template-columns: 1fr auto; gap: var(--s3);
-  border-top: 1px solid var(--line-strong); margin-top: var(--s1);
-  padding-top: var(--s3); font-weight: 620; font-size: var(--t-body);
+  display: grid; grid-template-columns: 1fr auto; gap: var(--s2);
+  border-top: 1px solid var(--line-strong); margin-top: var(--s0);
+  padding-top: var(--s2); font-weight: 600; font-size: var(--t-body);
 }
 
 /* ------------------------------------------------------------ compact rows */
 
-.vy-row { display: flex; align-items: center; gap: var(--s3); }
-.vy-spread { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); }
-.vy-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+.vy-row { display: flex; align-items: center; gap: var(--s2); }
+.vy-spread { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s2); }
+.vy-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); }
 
 .vy-item {
-  display: grid; grid-template-columns: 1fr auto; gap: var(--s3);
-  align-items: center; padding: var(--s3) 0;
+  display: grid; grid-template-columns: 1fr auto; gap: var(--s2);
+  align-items: center; padding: var(--s2) 0;
 }
 .vy-item + .vy-item { border-top: 1px solid var(--line); }
-.vy-item-title { font-size: var(--t-body); font-weight: 500; }
-.vy-item-sub { font-size: var(--t-small); color: var(--ink-2); }
+.vy-item-title { font-size: var(--t-body); font-weight: 500; display: block; }
+.vy-item-sub { font-size: var(--t-small); color: var(--ink-2); display: block; }
 
-/* Goal progress: a thin rule, not a chart. */
-.vy-goal { padding: var(--s3) 0; }
+/* A progress line, not a gauge. */
+.vy-goal { padding: var(--s2) 0; }
 .vy-goal + .vy-goal { border-top: 1px solid var(--line); }
-.vy-goal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--s2); }
+.vy-goal-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--s1); }
 
 /* --------------------------------------------------------------- controls */
 
 .vy-btn {
   font: inherit; font-size: var(--t-small); font-weight: 500; cursor: pointer;
-  border-radius: var(--radius-sm); padding: 9px 15px; min-height: 38px;
+  border-radius: var(--radius-xs); padding: 10px 16px; min-height: 40px;
   border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink);
-  transition: background 130ms ease, border-color 130ms ease;
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
 }
 .vy-btn:hover { background: var(--surface-2); }
 .vy-btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.vy-btn-primary:hover { background: var(--accent); opacity: 0.9; }
+.vy-btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, #000); }
 .vy-btn-risk { background: var(--risk); color: #fff; border-color: var(--risk); }
 .vy-btn:disabled { opacity: 0.42; cursor: not-allowed; }
 
-.vy :focus-visible {
-  outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px;
-}
+.vy :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-xs); }
 
 /* ---------------------------------------------------------------- status */
 
-.vy-status { display: inline-flex; align-items: center; gap: var(--s2); font-size: var(--t-small); }
+.vy-status { display: inline-flex; align-items: center; gap: var(--s1); font-size: var(--t-small); }
 .vy-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
 .vy-dot-ok { background: var(--positive); }
 .vy-dot-review { background: var(--review); }
 .vy-dot-risk { background: var(--risk); }
 .vy-dot-idle { background: var(--ink-3); }
 
+/* Autopilot running: a slow, almost imperceptible pulse. Never flashy —
+   this indicator sits on screen indefinitely. */
+.vy-dot-live { position: relative; }
+.vy-dot-live::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  border: 1px solid var(--positive); opacity: 0;
+  animation: vy-pulse 3.2s var(--ease) infinite;
+}
+@keyframes vy-pulse {
+  0%   { transform: scale(0.7); opacity: 0.5; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
 .vy-meter { height: 3px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
 .vy-meter-fill {
   height: 100%; background: var(--accent); border-radius: 2px;
-  transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: width 480ms var(--ease);
 }
 
 /* ---------------------------------------------------------------- dialogs */
@@ -267,42 +318,44 @@
 .vy-modal-wrap {
   position: fixed; inset: 0; z-index: 100; display: flex;
   align-items: flex-start; justify-content: center;
-  background: var(--scrim); padding: var(--s5); overflow-y: auto;
-  animation: vy-fade 150ms ease;
+  background: var(--scrim); padding: var(--s3); overflow-y: auto;
+  animation: vy-fade var(--dur-fast) ease;
 }
 @keyframes vy-fade { from { opacity: 0 } to { opacity: 1 } }
 .vy-modal {
   background: var(--surface); border: 1px solid var(--line-strong);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.24);
+  box-shadow: var(--shadow-modal);
   border-radius: var(--radius); width: 100%; max-width: 440px; margin: auto;
-  animation: vy-rise 220ms cubic-bezier(0.22, 1, 0.36, 1); overflow: hidden;
+  animation: vy-rise var(--dur-mid) var(--ease); overflow: hidden;
 }
 @keyframes vy-rise { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
-.vy-modal-head { padding: var(--s5) var(--s5) 0; }
-.vy-modal-body { padding: var(--s4) var(--s5) var(--s5); }
+.vy-modal-head { padding: var(--s3) var(--s3) 0; }
+.vy-modal-body { padding: var(--s2) var(--s3) var(--s3); }
 .vy-modal-foot {
-  display: flex; gap: var(--s2); padding: var(--s4) var(--s5);
+  display: flex; gap: var(--s1); padding: var(--s2) var(--s3);
   border-top: 1px solid var(--line); background: var(--surface-2);
 }
-.vy-modal-foot .vy-btn { flex: 1; min-height: 42px; }
+/* The approving action is visually dominant; nobody approves money by accident. */
+.vy-modal-foot .vy-btn { flex: 1; min-height: 44px; }
+.vy-modal-foot .vy-btn-primary, .vy-modal-foot .vy-btn-risk { flex: 1.6; font-weight: 600; }
 
-.vy-kv { display: grid; grid-template-columns: 120px 1fr; gap: var(--s1) var(--s3); font-size: var(--t-small); padding: var(--s3) 0; }
+.vy-kv { display: grid; grid-template-columns: 118px 1fr; gap: var(--s0) var(--s2); font-size: var(--t-small); padding: var(--s2) 0; }
 .vy-kv dt { color: var(--ink-3); }
 .vy-kv dd { margin: 0; }
 
 /* --------------------------------------------------------------- notices */
 
 .vy-notice {
-  border-radius: var(--radius-sm); padding: var(--s3) var(--s4);
-  font-size: var(--t-small); margin: var(--s3) 0; border: 1px solid;
+  border-radius: var(--radius-sm); padding: var(--s2); font-size: var(--t-small);
+  margin: var(--s2) 0; border: 1px solid;
 }
-.vy-notice-info { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--ink); }
-.vy-notice-review { background: var(--review-wash); border-color: color-mix(in srgb, var(--review) 30%, transparent); color: var(--ink); }
-.vy-notice-risk { background: var(--risk-wash); border-color: color-mix(in srgb, var(--risk) 30%, transparent); color: var(--ink); }
-.vy-notice-title { font-weight: 620; margin-bottom: var(--s1); }
+.vy-notice-info { background: var(--accent-wash); border-color: var(--accent-line); color: var(--ink); }
+.vy-notice-review { background: var(--review-wash); border-color: color-mix(in srgb, var(--review) 28%, transparent); color: var(--ink); }
+.vy-notice-risk { background: var(--risk-wash); border-color: color-mix(in srgb, var(--risk) 28%, transparent); color: var(--ink); }
+.vy-notice-title { font-weight: 600; margin-bottom: var(--s0); }
 
 .vy-rule {
-  display: grid; grid-template-columns: auto 1fr; gap: var(--s2);
+  display: grid; grid-template-columns: auto 1fr; gap: var(--s1);
   padding: 10px 0; font-size: var(--t-small); border-top: 1px solid var(--line);
 }
 .vy-rule:first-child { border-top: 0; }
@@ -311,12 +364,12 @@
 
 /* ----------------------------------------------------------------- forms */
 
-.vy-field { margin-bottom: var(--s4); }
-.vy-field label { display: block; font-size: var(--t-small); margin-bottom: var(--s2); color: var(--ink-2); }
+.vy-field { margin-bottom: var(--s2); }
+.vy-field label { display: block; font-size: var(--t-small); margin-bottom: var(--s1); color: var(--ink-2); }
 .vy-input {
-  font: inherit; font-family: var(--mono); width: 100%; padding: 10px var(--s3);
-  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
-  background: var(--bg); color: var(--ink); min-height: 40px;
+  font: inherit; font-family: var(--mono); width: 100%; padding: 10px var(--s2);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-xs);
+  background: var(--surface); color: var(--ink); min-height: 42px;
 }
 .vy-range { width: 100%; accent-color: var(--accent); }
 
@@ -324,10 +377,10 @@
 
 .vy-table { width: 100%; border-collapse: collapse; font-size: var(--t-small); }
 .vy-table th {
-  text-align: left; font-weight: 560; color: var(--ink-3); font-size: var(--t-micro);
-  text-transform: uppercase; letter-spacing: 0.07em; padding: 0 var(--s3) var(--s2) 0;
+  text-align: left; font-weight: 600; color: var(--ink-3); font-size: var(--t-micro);
+  text-transform: uppercase; letter-spacing: 0.07em; padding: 0 var(--s2) var(--s1) 0;
 }
-.vy-table td { padding: 10px var(--s3) 10px 0; border-top: 1px solid var(--line); }
+.vy-table td { padding: 10px var(--s2) 10px 0; border-top: 1px solid var(--line); }
 .vy-scroll { overflow-x: auto; }
 
 /* ------------------------------------------------------------------- log */
@@ -338,105 +391,69 @@
 .vy-hash { color: var(--ink-3); word-break: break-all; }
 
 .vy-foot {
-  margin-top: var(--s7); padding-top: var(--s4); border-top: 1px solid var(--line);
+  margin-top: var(--s5); padding-top: var(--s2); border-top: 1px solid var(--line);
   font-size: var(--t-micro); color: var(--ink-3); line-height: 1.6;
 }
 .vy-foot a { color: var(--ink-2); }
 
-/* Disclosure acknowledgement. Each explicit disclosure is a separate,
-   deliberate act — never one blanket "I agree" covering everything, because a
-   single checkbox proves nothing about what was actually read. */
-.vy-ack { margin-top: var(--s2); }
+/* Each explicit disclosure is a separate, deliberate act — never one blanket
+   "I agree", which proves nothing about what was read. */
+.vy-ack { margin-top: var(--s1); }
 .vy-ack-row {
-  display: grid; grid-template-columns: auto 1fr; gap: var(--s3);
+  display: grid; grid-template-columns: auto 1fr; gap: var(--s2);
   align-items: start; font-size: var(--t-small); cursor: pointer;
-  padding: var(--s3) var(--s4); border: 1px solid var(--line);
+  padding: var(--s2); border: 1px solid var(--line);
   border-radius: var(--radius-sm); background: var(--surface-2);
 }
-.vy-ack-row input { margin-top: 3px; accent-color: var(--accent); width: 16px; height: 16px; }
+.vy-ack-row input { margin-top: 2px; accent-color: var(--accent); width: 16px; height: 16px; }
 .vy-ack-passive { cursor: default; grid-template-columns: 1fr; }
-.vy-ack-body { display: block; color: var(--ink-2); margin-top: var(--s1); }
+.vy-ack-body { display: block; color: var(--ink-2); margin-top: var(--s0); }
 
-/* --------------------------------------------------------------- responsive */
+/* ------------------------------------------------------------- responsive */
 
-@media (max-width: 700px) {
-  .vy-tabs { margin-left: 0; order: 3; flex-basis: 100%; }
-  .vy-chip { font-size: 10.5px; }
-  .vy-shell { padding-left: var(--s4); padding-right: var(--s4); }
-  .vy-topbar-in { padding-left: var(--s4); padding-right: var(--s4); }
+/* Below the sidebar breakpoint the nav becomes a bottom bar. Same element,
+   same markup, same accessibility tree. */
+@media (max-width: 899px) {
+  .vy-layout { display: block; padding: 0 var(--s2); max-width: 680px; }
+  .vy-topbar-in { padding: var(--s2); max-width: 680px; }
+  .vy-shell { padding-bottom: 92px; }
+
+  .vy-nav {
+    position: fixed; inset: auto 0 0 0; z-index: 50;
+    flex-direction: row; gap: 0; padding: 0;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: saturate(180%) blur(16px);
+    border-top: 1px solid var(--line);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .vy-nav-item {
+    flex: 1 1 0; flex-direction: column; justify-content: center;
+    gap: 3px; min-height: 54px; padding: 8px 2px; border-radius: 0;
+    text-align: center;
+  }
+  .vy-nav-item[aria-current="true"] { background: none; }
+  .vy-nav-label { font-size: 10px; letter-spacing: -0.01em; line-height: 1; }
 }
-@media (max-width: 620px) {
-  .vy-grid-2 { grid-template-columns: 1fr; }
-}
-@media (max-width: 460px) {
+
+@media (max-width: 620px) { .vy-grid-2 { grid-template-columns: 1fr; } }
+
+@media (max-width: 400px) {
   .vy-kv { grid-template-columns: 1fr; gap: 0; }
-  .vy-kv dd { margin-bottom: var(--s2); }
+  .vy-kv dd { margin-bottom: var(--s1); }
   .vy-modal-foot { flex-direction: column-reverse; }
+  .vy-chip { display: none; }
+}
+
+/* Very narrow phones: icons plus the active colour still identify the section. */
+@media (max-width: 349px) {
+  .vy-nav-label { display: none; }
+  .vy-nav-item { min-height: 50px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .vy *, .vy *::before, .vy *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* --------------------------------------------------- mobile bottom nav */
-
-/* Hidden on desktop, where the top strip is the navigation. Never both. */
-.vy-bottomnav { display: none; }
-
-@media (max-width: 700px) {
-  .vy-tabs { display: none; }
-
-  .vy-bottomnav {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    position: fixed;
-    inset: auto 0 0 0;
-    z-index: 50;
-    background: color-mix(in srgb, var(--bg) 92%, transparent);
-    backdrop-filter: saturate(180%) blur(16px);
-    border-top: 1px solid var(--line);
-    /* Clear the iOS home indicator rather than sitting under it. */
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  .vy-bottomnav-item {
-    font: inherit;
-    background: none;
-    border: 0;
-    cursor: pointer;
-    color: var(--ink-3);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    /* Comfortably above the 44px minimum touch target. */
-    min-height: 54px;
-    padding: 7px 2px 8px;
-    transition: color 120ms ease;
-  }
-  .vy-bottomnav-item[aria-current="true"] { color: var(--accent); }
-  .vy-bottomnav-item:active { background: var(--surface-2); }
-
-  .vy-bottomnav-label {
-    font-size: 10px;
-    letter-spacing: -0.01em;
-    line-height: 1;
-    /* Six labels share the width; the longest must not wrap or clip. */
-    max-width: 100%;
-  }
-
-  /* Leave room so the last card is never trapped under the bar. */
-  .vy-shell { padding-bottom: 96px; }
-}
-
-/* Very narrow phones: drop the labels rather than let them collide. The
-   icons plus the active-colour cue still identify the section. */
-@media (max-width: 349px) {
-  .vy-bottomnav-label { display: none; }
-  .vy-bottomnav-item { min-height: 50px; }
 }

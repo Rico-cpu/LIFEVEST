@@ -43,9 +43,26 @@ const Icon = {
   activity: 'M3 12h4l3 7 4-16 3 9h4',
 };
 
+/**
+ * Veyra mark: three streams converging into one. Flow, direction and
+ * consolidation — which is the product's actual promise — without reaching for
+ * a dollar sign, a coin, or a rising chart. Legible down to 16px.
+ */
+function Mark({ size = 18 }) {
+  return (
+    <svg className="vy-mark" viewBox="0 0 24 24" width={size} height={size} fill="none"
+      stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">
+      <path d="M3 6.2c6.2 0 5.2 5.8 10.4 5.8" />
+      <path d="M3 12h10.4" />
+      <path d="M3 17.8c6.2 0 5.2-5.8 10.4-5.8" />
+      <circle cx="18.4" cy="12" r="2.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 function NavIcon({ name }) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"
+    <svg className="vy-nav-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" aria-hidden="true"
       stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <path d={Icon[name]} />
     </svg>
@@ -85,8 +102,10 @@ export default function VeyraPage() {
   if (!ready || !v) {
     return (
       <div className="vy">
-          <div className="vy-shell">
-          <p className="vy-greeting vy-boot">Understanding your financial picture…</p>
+          <div className="vy-layout">
+          <main className="vy-shell">
+            <p className="vy-greeting vy-boot">Understanding your financial picture…</p>
+          </main>
         </div>
       </div>
     );
@@ -156,21 +175,31 @@ export default function VeyraPage() {
 
       <header className="vy-topbar">
         <div className="vy-topbar-in">
-          <span className="vy-wordmark">Veyra</span>
+          <span className="vy-wordmark"><Mark /> Veyra</span>
           <span className="vy-chip" title={LEVEL_META[v.authorizationLevel].summary}>
-            Level {v.authorizationLevel} · {LEVEL_META[v.authorizationLevel].name}
+            {LEVEL_META[v.authorizationLevel].name}
           </span>
-          <nav className="vy-tabs">
-            {TABS.map((t) => (
-              <button key={t.id} className="vy-tab" aria-current={tab === t.id} onClick={() => setTab(t.id)}>
-                {t.label}
-              </button>
-            ))}
-          </nav>
         </div>
       </header>
 
-      <main className="vy-shell">
+      <div className="vy-layout">
+        {/* One nav: a sidebar beside the content on desktop, a bottom bar on
+            mobile. Same markup and the same accessibility tree in both. */}
+        <nav className="vy-nav" aria-label="Primary">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              className="vy-nav-item"
+              aria-current={tab === t.id}
+              onClick={() => { setTab(t.id); window.scrollTo({ top: 0 }); }}
+            >
+              <NavIcon name={t.id} />
+              <span className="vy-nav-label">{t.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <main className="vy-shell">
         <p className="vy-sim">
           <strong>Demonstration.</strong>
           <span>No institution is connected and no money can move.</span>
@@ -198,24 +227,9 @@ export default function VeyraPage() {
           </p>
           Twin <code>{snap.twinVersion}</code> · Constitution <code>{snap.constitutionVersion}</code>.
           Every figure above is computed by <code>lib/veyra</code> and covered by its test suite.
-        </footer>
-      </main>
-
-      {/* Mobile primary navigation. The top strip hides below 700px so there is
-          never a second, competing nav on screen at the same time. */}
-      <nav className="vy-bottomnav" aria-label="Primary">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            className="vy-bottomnav-item"
-            aria-current={tab === t.id}
-            onClick={() => { setTab(t.id); window.scrollTo({ top: 0 }); }}
-          >
-            <NavIcon name={t.id} />
-            <span className="vy-bottomnav-label">{t.label}</span>
-          </button>
-        ))}
-      </nav>
+          </footer>
+        </main>
+      </div>
 
       {record && (
         <ApprovalModal
