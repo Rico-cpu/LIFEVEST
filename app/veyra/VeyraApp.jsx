@@ -25,6 +25,9 @@ import { run, increaseInvesting, majorPurchase, incomeChange } from '../../lib/v
 import { buildStatement } from '../../lib/veyra/statements.mjs';
 import { ACTIVATION_ACKNOWLEDGEMENTS, MODE, MODE_META } from '../../lib/veyra/autopilot.mjs';
 import AuthBadge from './AuthBadge';
+import Splash, { splashAlreadySeen } from './Splash';
+import Skeleton from './Skeleton';
+import Welcome, { alreadyWelcomed } from './Welcome';
 import { statementRows, statementSheets, toCSV, toWorkbookXML, filenameFor, download, MIME } from '../../lib/veyra/export.mjs';
 
 const HUMAN = { kind: 'user', id: 'u_demo' };
@@ -83,6 +86,10 @@ export default function VeyraPage() {
   const engineRef = useRef(null);
   const [, rerender] = useReducer((n) => n + 1, 0);
   const [ready, setReady] = useState(false);
+  // Both start false so the server render and the first client render agree;
+  // the real values are read from storage after mount.
+  const [showSplash, setShowSplash] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [tab, setTab] = useState('home');
   const [review, setReview] = useState(null); // { actionId, step }
 
@@ -96,6 +103,8 @@ export default function VeyraPage() {
       authorizationLevel: LEVEL.APPROVE_EACH,
       autopilot: demoAutopilot,
     });
+    setShowSplash(!splashAlreadySeen());
+    setShowWelcome(!alreadyWelcomed());
     setReady(true);
   }, []);
 
@@ -103,9 +112,34 @@ export default function VeyraPage() {
   if (!ready || !v) {
     return (
       <div className="vy">
-          <div className="vy-layout">
-          <main className="vy-shell">
-            <p className="vy-greeting vy-boot">Understanding your financial picture…</p>
+        <div className="vy-layout-solo">
+          <main className="vy-shell"><Skeleton /></main>
+        </div>
+      </div>
+    );
+  }
+
+  // Brief, once per session, and skipped entirely under reduced motion.
+  if (showSplash) {
+    return (
+      <div className="vy">
+        <Splash onDone={() => setShowSplash(false)} />
+      </div>
+    );
+  }
+
+  // Shown once per device, to frame what someone is about to look at.
+  if (showWelcome) {
+    return (
+      <div className="vy">
+        <header className="vy-topbar">
+          <div className="vy-topbar-in">
+            <span className="vy-wordmark"><Mark /> Veyra</span>
+          </div>
+        </header>
+        <div className="vy-layout-solo">
+          <main className="vy-shell" style={{ paddingTop: 'var(--s5)' }}>
+            <Welcome onDone={() => setShowWelcome(false)} />
           </main>
         </div>
       </div>

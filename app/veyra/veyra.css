@@ -500,3 +500,72 @@
 .vy-topbar-in .vy-chip { margin-left: auto; }
 .vy-topbar-in .vy-authbadge { margin-left: var(--s2); }
 @media (max-width: 560px) { .vy-authbadge-who { display: none; } }
+
+/* ------------------------------------------------------- splash / loading */
+
+.vy-splash {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--s2); background: var(--bg); color: var(--ink);
+  transition: opacity 240ms var(--ease);
+}
+.vy-splash.is-leaving { opacity: 0; pointer-events: none; }
+
+.vy-splash-mark { color: var(--accent); display: flex; }
+/* The three streams draw in and converge, which is the mark's whole idea.
+   Short, and it never loops — a splash that repeats is a stall. */
+.vy-splash-mark path {
+  stroke-dasharray: 22; stroke-dashoffset: 22;
+  animation: vy-draw 620ms var(--ease) forwards;
+}
+.vy-splash-s2 { animation-delay: 70ms !important; }
+.vy-splash-s3 { animation-delay: 140ms !important; }
+.vy-splash-dot { opacity: 0; animation: vy-dot 320ms var(--ease) 420ms forwards; }
+@keyframes vy-draw { to { stroke-dashoffset: 0; } }
+@keyframes vy-dot { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+
+.vy-splash-word {
+  font-size: 12.5px; font-weight: 600; letter-spacing: 0.42em;
+  text-transform: uppercase; color: var(--ink-2);
+  opacity: 0; animation: vy-word 420ms var(--ease) 300ms forwards;
+  padding-left: 0.42em; /* optical: trailing letter-space would look off-centre */
+}
+@keyframes vy-word { from { opacity: 0; letter-spacing: 0.62em; } to { opacity: 1; letter-spacing: 0.42em; } }
+
+/* Skeleton shapes match the real layout so nothing jumps on arrival. */
+.vy-skel { padding-top: var(--s5); }
+.vy-skel-line, .vy-skel-card {
+  background: var(--surface-2); border-radius: var(--radius-xs);
+  animation: vy-shimmer 1.6s ease-in-out infinite;
+}
+.vy-skel-card {
+  height: 108px; border-radius: var(--radius); margin-bottom: var(--s2);
+  border: 1px solid var(--line); background: var(--surface);
+}
+@keyframes vy-shimmer { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+/* --------------------------------------------------------------- welcome */
+
+.vy-welcome { animation: vy-rise 320ms var(--ease); transition: opacity 200ms var(--ease); }
+.vy-welcome.is-leaving { opacity: 0; }
+.vy-welcome-list { list-style: none; margin: var(--s3) 0 0; padding: 0; }
+.vy-welcome-list li {
+  padding: var(--s2) 0; border-top: 1px solid var(--line);
+  display: grid; gap: 2px; font-size: var(--t-small);
+}
+.vy-welcome-list strong { font-weight: 600; }
+.vy-welcome-list span { color: var(--ink-2); }
+.vy-welcome-cta { margin-top: var(--s3); }
+
+/* Screens that render without the nav — splash aftermath, welcome, skeleton —
+   must not inherit the two-column grid, or they land in the 216px sidebar
+   track and render as a squeezed ribbon. */
+.vy-layout-solo {
+  display: block;
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0 var(--s3);
+}
+@media (max-width: 899px) {
+  .vy-layout-solo { padding: 0 var(--s2); }
+}
