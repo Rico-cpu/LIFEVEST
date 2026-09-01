@@ -31,6 +31,8 @@ npm test     # node --test, 90+ cases, no dependencies
 | `readiness.mjs` | §38 | Financial Readiness — five explainable dimensions, explicitly not a credit score. |
 | `statements.mjs` | — | Monthly and annual statements, every line marked `observed` or `derived`. |
 | `export.mjs` | — | CSV (RFC 4180) and multi-sheet SpreadsheetML workbooks. Zero dependencies. |
+| `autopilot.mjs` | §14–§19, §46 | Modes, activation consent, hard limits, automatic pause, emergency stop. |
+| `reconciliation.mjs` | §27 | Internal belief vs institution fact. Disagreement is an exception, never a correction. |
 | `engine.mjs` | §45 | The orchestrator. One path to money movement, instrumented end to end. |
 
 ## The invariants
@@ -52,6 +54,13 @@ They are the reason the core exists.
 6. **State cannot be skipped.** Illegal transitions throw rather than degrade.
 7. **The engine never executes.** It calls an injected executor; it has no
    knowledge of any bank.
+8. **Nothing runs under uncertainty.** Stale balances, unhealthy connections,
+   reconciliation breaks, unreviewed failures and outdated consent each pause
+   automation, and every pause names its cause.
+9. **A standing rule cannot satisfy a step-up.** Autopilot may act on authority
+   granted in advance, but `REQUIRE_REAUTH` always falls back to asking.
+10. **A replay accrues nothing.** An idempotent replay is flagged, so spend
+    counters and velocity limits are not corrupted by a retry.
 
 ## Design decisions worth knowing
 
@@ -68,5 +77,9 @@ They are the reason the core exists.
   stated and dispersion narrowing as `σ/√T` in the rate while widening in the
   outcome. Both are true and a product that shows only the first is lying by
   omission.
+- **One source of truth for "may automation act".** The authorization level is
+  derived from the Autopilot mode rather than stored beside it. They were two
+  systems that could disagree, which is the bug class that moves money by
+  accident.
 - **Every statement line declares its basis.** `observed` came from a balance;
   `derived` was computed from a rate. Required on every row.

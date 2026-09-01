@@ -16,13 +16,14 @@ import { Veyra } from '../../lib/veyra/engine.mjs';
 import { VERDICT, sealConstitution } from '../../lib/veyra/policy.mjs';
 import { STATE } from '../../lib/veyra/actions.mjs';
 import { LEVEL, LEVEL_META } from '../../lib/veyra/authorization.mjs';
-import { demoTwin, demoConstitution, demoContext, demoPlan, constitutionLines } from '../../lib/veyra/fixtures.mjs';
+import { demoTwin, demoConstitution, demoContext, demoPlan, demoAutopilot, constitutionLines } from '../../lib/veyra/fixtures.mjs';
 import { fmt } from '../../lib/veyra/money.mjs';
 import { monthlyNetCashFlowCents, account } from '../../lib/veyra/twin.mjs';
 import { planHealth, planProjection, PLAN_HEALTH } from '../../lib/veyra/plans.mjs';
 import { compare } from '../../lib/veyra/strategies.mjs';
 import { run, increaseInvesting, majorPurchase, incomeChange } from '../../lib/veyra/scenarios.mjs';
 import { buildStatement } from '../../lib/veyra/statements.mjs';
+import { ACTIVATION_ACKNOWLEDGEMENTS, MODE, MODE_META } from '../../lib/veyra/autopilot.mjs';
 import { statementRows, statementSheets, toCSV, toWorkbookXML, filenameFor, download, MIME } from '../../lib/veyra/export.mjs';
 
 const HUMAN = { kind: 'user', id: 'u_demo' };
@@ -75,6 +76,7 @@ export default function VeyraPage() {
       constitution: demoConstitution,
       context: demoContext,
       authorizationLevel: LEVEL.APPROVE_EACH,
+      autopilot: demoAutopilot,
     });
     setReady(true);
   }, []);
@@ -104,6 +106,23 @@ export default function VeyraPage() {
   async function proposeDirect(action, by = HUMAN) {
     if (!v.actions.get(action.id)) await v.propose(action, by);
     setReview({ actionId: action.id, step: 'review' });
+    rerender();
+  }
+
+  async function enableAutopilot(ackIds) {
+    await v.enableAutopilot(ackIds, HUMAN, MODE.GUARDED);
+    rerender();
+  }
+  async function disableAutopilot() {
+    await v.disableAutopilot(HUMAN);
+    rerender();
+  }
+  async function emergencyStop() {
+    await v.engageEmergencyStop(HUMAN, 'stopped from the control centre');
+    rerender();
+  }
+  async function resumeAutomation() {
+    await v.resumeAutomation(HUMAN, { reauthenticatedAt: Date.now() });
     rerender();
   }
 
@@ -161,7 +180,14 @@ export default function VeyraPage() {
         {tab === 'plan' && <Plan v={v} />}
         {tab === 'explore' && <Explore v={v} />}
         {tab === 'statements' && <Statements v={v} />}
-        {tab === 'rules' && <Rules v={v} onChange={setConstitution} onPropose={proposeDirect} />}
+        {tab === 'rules' && (
+          <Rules
+            v={v}
+            onChange={setConstitution}
+            onPropose={proposeDirect}
+            autopilot={{ enable: enableAutopilot, disable: disableAutopilot, stop: emergencyStop, resume: resumeAutomation }}
+          />
+        )}
         {tab === 'activity' && <Activity v={v} />}
 
         <footer className="vy-foot">
@@ -633,16 +659,114 @@ function Statements({ v }) {
   );
 }
 
+/* ------------------------------------- Autopilot control centre (§45, §46) */
+
+function Autopilot({ v, controls }) {
+  const status = v.autopilotStatus();
+  const [acks, setAcks] = useState([]);
+  const { policy, pause, usage, emergencyStopEngaged } = status;
+  const meta = MODE_META.find((m) => m.mode === policy.mode);
+  const ready = ACTIVATION_ACKNOWLEDGEMENTS.every((a) => acks.includes(a.id));
+
+  const toggle = (id) => setAcks((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  return (
+    <div className="vy-card">
+      <div className="vy-spread" style={{ marginBottom: 14 }}>
+        <div className="vy-card-label" style={{ margin: 0 }}>Autopilot</div>
+        <span className="vy-status">
+          <span className={`vy-dot ${pause.canRun ? 'vy-dot-ok' : emergencyStopEngaged ? 'vy-dot-risk' : 'vy-dot-review'}`} />
+          {pause.canRun ? 'Active' : emergencyStopEngaged ? 'Stopped' : 'Paused'}
+        </span>
+      </div>
+
+      <div className="vy-item-sub" style={{ marginBottom: 12 }}>{meta?.name} — {meta?.summary}</div>
+
+      {/* Never leave a pause unexplained. Each reason names itself. */}
+      {pause.paused && (
+        <div className={`vy-notice ${emergencyStopEngaged ? 'vy-notice-risk' : 'vy-notice-review'}`}>
+          <div className="vy-notice-title">
+            {emergencyStopEngaged ? 'All automation stopped' : 'Autopilot paused'}
+          </div>
+          <ul style={{ margin: '6px 0 0', paddingLeft: 18 }}>
+            {pause.reasons.map((r) => <li key={r.code} style={{ marginTop: 3 }}>{r.detail}</li>)}
+          </ul>
+          <div style={{ marginTop: 8 }}>No automated action will run while this is true.</div>
+        </div>
+      )}
+
+      {policy.enabled && (
+        <>
+          <dl className="vy-kv">
+            <dt>Per action</dt><dd>{fmt(policy.maxPerActionCents, { cents: false })}</dd>
+            <dt>Per day</dt><dd>{fmt(usage.executedTodayCents, { cents: false })} of {fmt(policy.maxPerDayCents, { cents: false })}</dd>
+            <dt>Per month</dt><dd>{fmt(usage.executedThisMonthCents, { cents: false })} of {fmt(policy.maxPerMonthCents, { cents: false })}</dd>
+            <dt>Actions today</dt><dd>{usage.actionsToday} of {policy.maxActionsPerDay}</dd>
+            <dt>Allowed</dt><dd>{policy.allowedActionKinds.join(', ').replace(/_/g, ' ')}</dd>
+            <dt>Destinations</dt><dd>{policy.allowedDestinations.map((id) => safeName(v.twin, id)).join(', ') || 'none'}</dd>
+          </dl>
+          <div className="vy-row" style={{ flexWrap: 'wrap', marginTop: 8 }}>
+            <button className="vy-btn" onClick={controls.disable}>Disable Autopilot</button>
+            {emergencyStopEngaged ? (
+              <button className="vy-btn vy-btn-primary" onClick={controls.resume}>Resume automation</button>
+            ) : (
+              <button className="vy-btn vy-btn-risk" onClick={controls.stop}>Pause all automation</button>
+            )}
+          </div>
+        </>
+      )}
+
+      {!policy.enabled && (
+        <>
+          <div className="vy-notice vy-notice-review">
+            <div className="vy-notice-title">Automated financial actions involve risk</div>
+            Veyra&rsquo;s calculations, account data, institution availability and transaction
+            timing may contain errors, delays or outages. Automated actions can result in
+            unintended transfers, missed opportunities, investment losses, fees, tax
+            consequences or overdrafts. Investment values can decline, including loss of
+            principal. No automated strategy guarantees a profit or prevents loss.
+          </div>
+
+          {ACTIVATION_ACKNOWLEDGEMENTS.map((a) => (
+            <div className="vy-ack" key={a.id}>
+              <label className="vy-ack-row">
+                <input type="checkbox" checked={acks.includes(a.id)} onChange={() => toggle(a.id)} />
+                <span>{a.text}</span>
+              </label>
+            </div>
+          ))}
+
+          <button
+            className="vy-btn vy-btn-primary"
+            style={{ marginTop: 14 }}
+            disabled={!ready}
+            title={ready ? undefined : 'Acknowledge each item to continue'}
+            onClick={() => controls.enable(acks)}
+          >
+            Enable Guarded Autopilot
+          </button>
+          <p className="vy-sub" style={{ fontSize: 'var(--t-micro)' }}>
+            Full Autopilot is off by default and is never enabled for you. Guarded Autopilot
+            acts only inside the limits above, and pauses itself whenever anything is uncertain.
+          </p>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* --------------------------------------------- §37 The Financial Constitution */
 
-function Rules({ v, onChange, onPropose }) {
+function Rules({ v, onChange, onPropose, autopilot }) {
   const c = v.constitution;
   const pending = [...v.actions.values()].filter((r) => r.state !== STATE.EXECUTED && r.state !== STATE.REJECTED);
 
   return (
     <>
-      <p className="vy-greeting">Your financial constitution</p>
+      <p className="vy-greeting">Rules &amp; autopilot</p>
       <h1 className="vy-headline">Veyra operates strictly inside these rules.</h1>
+
+      <Autopilot v={v} controls={autopilot} />
 
       <div className="vy-card">
         <div className="vy-card-label">In your words</div>

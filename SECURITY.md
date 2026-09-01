@@ -77,6 +77,32 @@ The heuristic `screen()` is explicitly **advisory only**. A denylist of
 "ignore previous instructions" phrasings is not a security control; the
 structural boundary is what provides the guarantee.
 
+### Autopilot safety
+
+`lib/veyra/autopilot.mjs` — the rule is that no action executes under
+uncertainty, and it is enforced by derivation rather than by a flag. Pause
+conditions are computed from system state, so nothing can be "resumed" while a
+blocking condition still holds; resuming only clears an operator's own stop.
+
+- Full Autopilot is never a default, and activation requires all four risk
+  acknowledgements from a person, plus at least one pre-approved destination.
+- Activation consent is content-addressed: reword an acknowledgement and every
+  existing activation is invalidated.
+- Hard limits: per-action, per-day, per-month, actions-per-day velocity,
+  destination allowlist, action-type allowlist. All failures are reported, not
+  just the first.
+- Automatic pause on stale balances, unhealthy connections, reconciliation
+  breaks, unreviewed execution failures, security events, or outdated consent.
+- A standing rule can never satisfy a step-up requirement. Consent given last
+  month is not a passkey tap now, so `REQUIRE_REAUTH` always falls back to
+  asking.
+- Emergency stop cancels staged actions and can only be cleared by the account
+  holder with fresh re-authentication.
+
+`lib/veyra/reconciliation.mjs` compares Veyra's belief against the institution's
+fact. On disagreement it raises an exception and refuses automation against the
+affected accounts — it never resolves the difference by trusting Veyra.
+
 ### Authorization invariants
 
 `lib/veyra/actions.mjs`, covered by `__tests__/authorization.test.mjs`:
@@ -84,6 +110,27 @@ only a human can approve; approvals bind to the twin fingerprint and
 constitution version and are void if either moves; approvals expire;
 re-authentication must be fresh; execution is idempotent; illegal state
 transitions throw. See `lib/veyra/README.md`.
+
+## Framework baseline: NIST CSF 2.0
+
+The security program is organised against NIST CSF 2.0 rather than described
+with marketing language. "Bank-level" and "military-grade" are not claims that
+can be audited; a framework mapping can be. The honest state today, with gaps
+named rather than hidden:
+
+| Function | Implemented | Not yet |
+| --- | --- | --- |
+| **GOVERN** | Threat model and scope written down; the untrusted-input boundary and authorization invariants are stated as testable policy; `LEGAL_STATUS.md` records regulatory posture. | No named security owner, no risk register, no vendor management, no policy review cadence. |
+| **IDENTIFY** | Asset surface is small and enumerated above; dependencies tracked and audited; data flows documented (there are none off-device today). | No formal asset inventory or business-impact analysis for a connected system. |
+| **PROTECT** | Strict CSP with per-request nonces, HSTS preload, framing denied, COOP/CORP, Permissions-Policy; integer-cent arithmetic; human-only authorization; approvals bound to the state shown; idempotent execution; hard automation limits, allowlists and velocity caps; disclosure gate. | Identity (passkeys, MFA, sessions), key management, token vault, least-privilege access control — none exist because there is no backend. |
+| **DETECT** | Tamper-evident hash-chained audit log; reconciliation raises exceptions; unreviewed execution failures and stale data are detected and pause automation; `screen()` flags injection probes as telemetry. | No SIEM, no alerting, no anomaly baselining across users. |
+| **RESPOND** | Emergency stop halts all automation and cancels staged actions; resuming requires a person plus fresh re-authentication; every pause names its cause. | No incident response plan, no on-call, no breach notification process. |
+| **RECOVER** | Deterministic engine with no persisted state to corrupt; reconciliation is the mechanism for restoring agreement with institutions. | No backups, no restore procedure, no RTO/RPO — nothing is persisted yet. |
+
+The pattern is deliberate: PROTECT and DETECT are strong where the product
+actually is (a deterministic decision core), and empty where the product does
+not yet exist (identity, storage, operations). Claiming otherwise would be the
+security theatre this document is meant to avoid.
 
 ## On "end-to-end encrypted"
 
