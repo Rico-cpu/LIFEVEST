@@ -35,30 +35,29 @@ export default function Welcome({ onDone }) {
       <h1 className="vy-headline" style={{ marginBottom: 'var(--s2)' }}>
         Your money, intelligently routed.
       </h1>
-      <p className="vy-sub" style={{ marginBottom: 'var(--s4)' }}>
-        Veyra understands your financial position, decides what is worth doing next,
-        explains why, and acts only inside rules you set.
-      </p>
+      <div className="vy-meta" style={{ marginBottom: 'var(--s3)' }}>
+        <span>Understand</span><span>Decide</span><span>Explain</span><span>Approve</span><span>Execute</span>
+      </div>
 
-      <div className="vy-notice vy-notice-review">
-        <div className="vy-notice-title">What you are about to see</div>
-        The decision engine is live — the financial model, the policy and risk checks,
-        the disclosure gate and the audit trail all run for real, on sample data.
-        Execution is deliberately gated: no institution is connected and no money can move.
+      <div className="vy-facts">
+        <div className="vy-fact"><span className="vy-fact-k">Decision engine</span><span className="vy-fact-v">Live</span></div>
+        <div className="vy-fact"><span className="vy-fact-k">Data</span><span className="vy-fact-v">Sample</span></div>
+        <div className="vy-fact"><span className="vy-fact-k">Institutions connected</span><span className="vy-fact-v">None</span></div>
+        <div className="vy-fact"><span className="vy-fact-k">Money movement</span><span className="vy-fact-v">Gated</span></div>
       </div>
 
       <ul className="vy-welcome-list">
         <li>
-          <strong>Every number is reconstructible.</strong>
-          <span>Open “Why?” on Safe to Deploy and the calculation appears line by line.</span>
+          <strong>Why?</strong>
+          <span>Every figure reconstructs line by line.</span>
         </li>
         <li>
-          <strong>Nothing moves without you.</strong>
-          <span>Review a recommendation: approval stays disabled until each risk disclosure is acknowledged.</span>
+          <strong>Approvals</strong>
+          <span>Disabled until each risk disclosure is acknowledged.</span>
         </li>
         <li>
-          <strong>Everything is on the record.</strong>
-          <span>Activity holds a hash-chained log of who authorized what, and under which rules.</span>
+          <strong>Activity</strong>
+          <span>Hash-chained log of who authorized what.</span>
         </li>
       </ul>
 

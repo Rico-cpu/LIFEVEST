@@ -18,7 +18,7 @@ import { STATE } from '../../lib/veyra/actions.mjs';
 import { LEVEL, LEVEL_META } from '../../lib/veyra/authorization.mjs';
 import { demoTwin, demoConstitution, demoContext, demoPlan, demoAutopilot, constitutionLines } from '../../lib/veyra/fixtures.mjs';
 import { fmt } from '../../lib/veyra/money.mjs';
-import { monthlyNetCashFlowCents, account } from '../../lib/veyra/twin.mjs';
+import { monthlyNetCashFlowCents, account, liquidCents } from '../../lib/veyra/twin.mjs';
 import { planHealth, planProjection, PLAN_HEALTH } from '../../lib/veyra/plans.mjs';
 import { compare } from '../../lib/veyra/strategies.mjs';
 import { run, increaseInvesting, majorPurchase, incomeChange } from '../../lib/veyra/scenarios.mjs';
@@ -241,10 +241,12 @@ export default function VeyraPage() {
             is licensed activity. "Unfinished" and "deliberately gated" are very
             different claims, and only one of them is true. */}
         <p className="vy-sim">
-          <strong>Demonstration.</strong>
-          <span>
-            The decision engine is live. Execution is deliberately gated — no institution
-            is connected and no money can move.
+          <strong>Demonstration</strong>
+          <span className="vy-meta">
+            <span>Engine live</span>
+            <span>Execution gated</span>
+            <span>No institution connected</span>
+            <span>No money can move</span>
           </span>
         </p>
 
@@ -299,6 +301,7 @@ function Home({ v, snap, recs, onReview }) {
   const health = planHealth(demoPlan, v.twin, v.constitution);
   const blocked = [...v.actions.values()].filter((r) => r.state === STATE.BLOCKED);
   const [primary, ...rest] = recs;
+  const obligations30 = -(snap.safeToDeploy.trace.find((t) => t.label.startsWith('Upcoming obligations'))?.amountCents ?? 0);
 
   return (
     <>
@@ -320,6 +323,26 @@ function Home({ v, snap, recs, onReview }) {
           projected monthly net
         </div>
       </section>
+
+      {/* Four figures beat a paragraph describing the same four figures. */}
+      <div className="vy-stats">
+        <div className="vy-stat">
+          <div className="vy-stat-k">Liquid cash</div>
+          <div className="vy-stat-v">{fmt(liquidCents(v.twin), { cents: false })}</div>
+        </div>
+        <div className="vy-stat">
+          <div className="vy-stat-k">Obligations 30d</div>
+          <div className="vy-stat-v">{fmt(obligations30, { cents: false })}</div>
+        </div>
+        <div className="vy-stat">
+          <div className="vy-stat-k">Reserve</div>
+          <div className="vy-stat-v">{snap.reserve.monthsFunded.toFixed(1)}<span className="vy-stat-note"> / {v.constitution.reserveMonths} mo</span></div>
+        </div>
+        <div className="vy-stat">
+          <div className="vy-stat-k">Monthly net</div>
+          <div className={`vy-stat-v${monthly >= 0 ? ' vy-pos' : ''}`}>{fmt(monthly, { sign: monthly >= 0, cents: false })}</div>
+        </div>
+      </div>
 
       <div className="vy-card">
         <div className="vy-spread">
@@ -362,9 +385,7 @@ function Home({ v, snap, recs, onReview }) {
       ) : (
         <div className="vy-card">
           <div className="vy-card-label">Next best move</div>
-          <p className="vy-sub" style={{ margin: 0 }}>
-            Nothing to do right now. Veyra will tell you when that changes.
-          </p>
+          <p className="vy-sub" style={{ margin: 0 }}>Nothing to act on.</p>
         </div>
       )}
 
@@ -385,27 +406,25 @@ function Home({ v, snap, recs, onReview }) {
 
       <div className="vy-card">
         <div className="vy-card-label">Autopilot</div>
-        <div className="vy-item">
-          <span>
-            <span className="vy-item-title">{demoPlan.name}</span>
-            <span className="vy-item-sub">{health.detail}</span>
-          </span>
-          <span className="vy-status">
-            <span className={`vy-dot ${health.status === PLAN_HEALTH.ON_TRACK ? 'vy-dot-ok' : health.status === PLAN_HEALTH.PAUSED ? 'vy-dot-idle' : 'vy-dot-review'}`} />
-            {health.headline}
-          </span>
-        </div>
-        <div className="vy-item">
-          <span>
-            <span className="vy-item-title">Emergency reserve</span>
-            <span className="vy-item-sub">
-              {snap.reserve.monthsFunded.toFixed(1)} of {v.constitution.reserveMonths} months of essential expenses
+        <div className="vy-facts">
+          <div className="vy-fact">
+            <span className="vy-fact-k">{demoPlan.name}</span>
+            <span className="vy-status">
+              <span className={`vy-dot ${health.status === PLAN_HEALTH.ON_TRACK ? 'vy-dot-ok' : health.status === PLAN_HEALTH.PAUSED ? 'vy-dot-idle' : 'vy-dot-review'}`} />
+              {health.headline}
             </span>
-          </span>
-          <span className="vy-status">
-            <span className={`vy-dot ${snap.reserve.fullyFunded ? 'vy-dot-ok' : 'vy-dot-review'}`} />
-            {snap.reserve.fullyFunded ? 'Funded' : 'Below target'}
-          </span>
+          </div>
+          <div className="vy-fact">
+            <span className="vy-fact-k">Contribution</span>
+            <span className="vy-fact-v">{fmt(demoPlan.monthlyContributionCents, { cents: false })}/mo</span>
+          </div>
+          <div className="vy-fact">
+            <span className="vy-fact-k">Emergency reserve</span>
+            <span className="vy-status">
+              <span className={`vy-dot ${snap.reserve.fullyFunded ? 'vy-dot-ok' : 'vy-dot-review'}`} />
+              {snap.reserve.fullyFunded ? 'Funded' : 'Below target'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -463,11 +482,12 @@ function Readiness({ readiness }) {
                 <span style={{ fontSize: 'var(--t-small)' }}>{d.label}</span>
                 <span className="vy-metric" style={{ fontSize: 'var(--t-small)' }}>{d.score}</span>
               </div>
-              <div className="vy-meter"><div className="vy-meter-fill" style={{ width: `${d.score}%` }} /></div>
-              <div className="vy-item-sub" style={{ marginTop: 5 }}>{d.explanation}</div>
+              <div className="vy-meter" title={d.explanation}><div className="vy-meter-fill" style={{ width: `${d.score}%` }} /></div>
             </div>
           ))}
-          <p className="vy-sub" style={{ fontSize: 'var(--t-micro)' }}>{readiness.disclaimer}</p>
+          <p className="vy-sub" style={{ fontSize: 'var(--t-micro)' }}>
+            Measured against your own targets. Not a credit score, not a rating, not a comparison.
+          </p>
         </div>
       )}
     </div>
@@ -501,15 +521,17 @@ function Plan({ v }) {
             {health.headline}
           </span>
         </div>
-        <p className="vy-sub" style={{ marginTop: 8 }}>{health.detail}</p>
-        <dl className="vy-kv">
-          <dt>Strategy</dt><dd>Growth — 55% US equity, 25% international, 10% bonds, 10% other</dd>
-          <dt>Contribution</dt><dd>{fmt(demoPlan.monthlyContributionCents, { cents: false })} monthly</dd>
-          <dt>Funding source</dt><dd>{account(v.twin, demoPlan.fundingAccountId).name}</dd>
-          <dt>Cash floor</dt><dd>{fmt(demoPlan.cashFloorCents, { cents: false })}</dd>
-          <dt>Rebalancing</dt><dd>Annual</dd>
-          <dt>Distributions</dt><dd>Reinvest</dd>
-        </dl>
+        <div className="vy-facts" style={{ marginTop: 10 }}>
+          <div className="vy-fact"><span className="vy-fact-k">Strategy</span><span className="vy-fact-v">Growth</span></div>
+          <div className="vy-fact"><span className="vy-fact-k">Allocation</span><span className="vy-fact-v">55 / 25 / 10 / 10</span></div>
+          <div className="vy-fact"><span className="vy-fact-k">Contribution</span><span className="vy-fact-v">{fmt(demoPlan.monthlyContributionCents, { cents: false })}/mo</span></div>
+          <div className="vy-fact"><span className="vy-fact-k">Funding</span><span className="vy-fact-v">{account(v.twin, demoPlan.fundingAccountId).name}</span></div>
+          <div className="vy-fact"><span className="vy-fact-k">Cash floor</span><span className="vy-fact-v">{fmt(demoPlan.cashFloorCents, { cents: false })}</span></div>
+          <div className="vy-fact"><span className="vy-fact-k">Rebalance / distributions</span><span className="vy-fact-v">Annual / reinvest</span></div>
+        </div>
+        <div className="vy-meta" style={{ marginTop: 10 }}>
+          <span>US equity 55%</span><span>Intl 25%</span><span>Bonds 10%</span><span>Other 10%</span>
+        </div>
       </div>
 
       <div className="vy-card">
@@ -519,9 +541,13 @@ function Plan({ v }) {
           <div style={{ textAlign: 'center' }}><div className="vy-sub">Central</div><div className="vy-figure-sm">{fmt(projection.midCents, { cents: false })}</div></div>
           <div style={{ textAlign: 'right' }}><div className="vy-sub">Higher</div><div className="vy-figure-sm">{fmt(projection.highCents, { cents: false })}</div></div>
         </div>
-        <p className="vy-sub" style={{ marginTop: 14, fontSize: 12 }}>
-          {projection.basis} Contributions total {fmt(projection.contributedCents, { cents: false })} over the period.
-          Investments can lose value; past performance does not guarantee future results.
+        <div className="vy-meta" style={{ marginTop: 12 }}>
+          <span>Contributed {fmt(projection.contributedCents, { cents: false })}</span>
+          <span>Today&rsquo;s dollars</span>
+          <span>Illustrative range, not a forecast</span>
+        </div>
+        <p className="vy-sub" style={{ fontSize: 'var(--t-micro)' }}>
+          Investments can lose value. Past performance does not guarantee future results.
         </p>
       </div>
 
@@ -545,10 +571,9 @@ function Plan({ v }) {
             </tbody>
           </table>
         </div>
-        <p className="vy-sub" style={{ marginTop: 12, fontSize: 12 }}>
-          Ranges are modelled from stated assumptions on the same contribution plan, in today’s dollars.
-          They are not forecasts, and no strategy is recommended here.
-        </p>
+        <div className="vy-meta" style={{ marginTop: 10 }}>
+          <span>Same contribution plan</span><span>Stated assumptions</span><span>Not forecasts</span><span>No strategy recommended</span>
+        </div>
       </div>
     </>
   );
@@ -609,9 +634,7 @@ function Explore({ v }) {
           <dt>Emergency reserve</dt><dd>{result.qualitative.emergencyReserve}</dd>
           <dt>Risk</dt><dd>{result.qualitative.risk}</dd>
         </dl>
-        <p className="vy-sub" style={{ fontSize: 12 }}>
-          Scenarios are computed against a copy of your financial twin. Nothing here changes your accounts or your plans.
-        </p>
+        <div className="vy-meta"><span>Computed on a copy</span><span>Nothing here changes your accounts or plans</span></div>
       </div>
     </>
   );
@@ -668,17 +691,28 @@ function Statements({ v }) {
             <button className="vy-btn vy-btn-primary" onClick={saveWorkbook}>Download spreadsheet</button>
           </span>
         </div>
-        <p className="vy-sub" style={{ fontSize: 12, marginTop: 12 }}>
-          The spreadsheet is a multi-sheet Excel workbook — one sheet per section, amounts as numbers so they sum.
-          CSV is a single flat sheet that opens anywhere. Both are generated on your device; nothing is uploaded.
-        </p>
+        <div className="vy-meta" style={{ marginTop: 12 }}>
+          <span>Spreadsheet: multi-sheet, amounts as numbers</span>
+          <span>CSV: single flat sheet</span>
+          <span>Generated on your device</span>
+        </div>
       </div>
 
       <div className={`vy-notice ${STANDING_STYLE[statement.standing]}`}>
         <div className="vy-notice-title">
           {statement.standing === 'historical' ? 'Reconstructed period' : statement.standing === 'projected' ? 'Projected period' : 'Period in progress'}
         </div>
-        {statement.standingNote}
+        <div className="vy-meta">
+          {statement.standing === 'historical' && (
+            <><span>Period closed</span><span>Rebuilt from current balances and run rates</span><span>Not recorded transactions</span></>
+          )}
+          {statement.standing === 'current' && (
+            <><span>In progress</span><span>Flow figures are run-rate estimates</span></>
+          )}
+          {statement.standing === 'projected' && (
+            <><span>Not started</span><span>Every figure projected from current rates</span></>
+          )}
+        </div>
       </div>
 
       {statement.sections.map((section) => (
@@ -711,7 +745,10 @@ function Statements({ v }) {
         </div>
       ))}
 
-      <p className="vy-sub" style={{ fontSize: 12 }}>{statement.basisNote}</p>
+      <div className="vy-meta">
+        <span><strong>observed</strong> — read from a balance</span>
+        <span><strong>derived</strong> — computed from a rate, an estimate</span>
+      </div>
     </>
   );
 }
@@ -737,7 +774,9 @@ function Autopilot({ v, controls }) {
         </span>
       </div>
 
-      <div className="vy-item-sub" style={{ marginBottom: 12 }}>{meta?.name} — {meta?.summary}</div>
+      <div className="vy-meta" style={{ marginBottom: 12 }}>
+        <span>{meta?.name}</span><span>{meta?.summary}</span>
+      </div>
 
       {/* Never leave a pause unexplained. Each reason names itself. */}
       {pause.paused && (
@@ -748,20 +787,20 @@ function Autopilot({ v, controls }) {
           <ul style={{ margin: '6px 0 0', paddingLeft: 18 }}>
             {pause.reasons.map((r) => <li key={r.code} style={{ marginTop: 3 }}>{r.detail}</li>)}
           </ul>
-          <div style={{ marginTop: 8 }}>No automated action will run while this is true.</div>
+          <div className="vy-meta" style={{ marginTop: 8 }}><span>No automated action will run</span></div>
         </div>
       )}
 
       {policy.enabled && (
         <>
-          <dl className="vy-kv">
-            <dt>Per action</dt><dd>{fmt(policy.maxPerActionCents, { cents: false })}</dd>
-            <dt>Per day</dt><dd>{fmt(usage.executedTodayCents, { cents: false })} of {fmt(policy.maxPerDayCents, { cents: false })}</dd>
-            <dt>Per month</dt><dd>{fmt(usage.executedThisMonthCents, { cents: false })} of {fmt(policy.maxPerMonthCents, { cents: false })}</dd>
-            <dt>Actions today</dt><dd>{usage.actionsToday} of {policy.maxActionsPerDay}</dd>
-            <dt>Allowed</dt><dd>{policy.allowedActionKinds.join(', ').replace(/_/g, ' ')}</dd>
-            <dt>Destinations</dt><dd>{policy.allowedDestinations.map((id) => safeName(v.twin, id)).join(', ') || 'none'}</dd>
-          </dl>
+          <div className="vy-facts">
+            <div className="vy-fact"><span className="vy-fact-k">Per action</span><span className="vy-fact-v">{fmt(policy.maxPerActionCents, { cents: false })}</span></div>
+            <div className="vy-fact"><span className="vy-fact-k">Today</span><span className="vy-fact-v">{fmt(usage.executedTodayCents, { cents: false })} / {fmt(policy.maxPerDayCents, { cents: false })}</span></div>
+            <div className="vy-fact"><span className="vy-fact-k">This month</span><span className="vy-fact-v">{fmt(usage.executedThisMonthCents, { cents: false })} / {fmt(policy.maxPerMonthCents, { cents: false })}</span></div>
+            <div className="vy-fact"><span className="vy-fact-k">Actions today</span><span className="vy-fact-v">{usage.actionsToday} / {policy.maxActionsPerDay}</span></div>
+            <div className="vy-fact"><span className="vy-fact-k">Allowed</span><span className="vy-fact-v">{policy.allowedActionKinds.join(', ').replace(/_/g, ' ')}</span></div>
+            <div className="vy-fact"><span className="vy-fact-k">Destinations</span><span className="vy-fact-v">{policy.allowedDestinations.length}</span></div>
+          </div>
           <div className="vy-row" style={{ flexWrap: 'wrap', marginTop: 8 }}>
             <button className="vy-btn" onClick={controls.disable}>Disable Autopilot</button>
             {emergencyStopEngaged ? (
@@ -777,11 +816,12 @@ function Autopilot({ v, controls }) {
         <>
           <div className="vy-notice vy-notice-review">
             <div className="vy-notice-title">Automated financial actions involve risk</div>
-            Veyra&rsquo;s calculations, account data, institution availability and transaction
-            timing may contain errors, delays or outages. Automated actions can result in
-            unintended transfers, missed opportunities, investment losses, fees, tax
-            consequences or overdrafts. Investment values can decline, including loss of
-            principal. No automated strategy guarantees a profit or prevents loss.
+            <ul className="vy-points">
+              <li>Calculations, account data, institution availability and transaction timing may contain errors, delays or outages.</li>
+              <li>Automated actions can cause unintended transfers, missed opportunities, investment losses, fees, tax consequences or overdrafts.</li>
+              <li>Investment values can decline, including loss of principal.</li>
+              <li>No automated strategy guarantees a profit or prevents loss.</li>
+            </ul>
           </div>
 
           {ACTIVATION_ACKNOWLEDGEMENTS.map((a) => (
@@ -802,10 +842,11 @@ function Autopilot({ v, controls }) {
           >
             Enable Guarded Autopilot
           </button>
-          <p className="vy-sub" style={{ fontSize: 'var(--t-micro)' }}>
-            Full Autopilot is off by default and is never enabled for you. Guarded Autopilot
-            acts only inside the limits above, and pauses itself whenever anything is uncertain.
-          </p>
+          <div className="vy-meta" style={{ marginTop: 10 }}>
+            <span>Full Autopilot off by default</span>
+            <span>Acts only inside your limits</span>
+            <span>Pauses on any uncertainty</span>
+          </div>
         </>
       )}
     </div>

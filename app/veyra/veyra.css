@@ -569,3 +569,49 @@
 @media (max-width: 899px) {
   .vy-layout-solo { padding: 0 var(--s2); }
 }
+
+/* ------------------------------------------------------------ dense data */
+
+/* A row of figures instead of a paragraph describing them. Four across on
+   desktop, two on a phone — never one, which turns a summary into a list. */
+.vy-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: var(--s2); margin-bottom: var(--s2);
+}
+.vy-stat { min-width: 0; }
+.vy-stat-k {
+  font-size: var(--t-micro); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 600; margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.vy-stat-v {
+  font-size: 17px; font-weight: 600; letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+}
+.vy-stat-note { font-size: var(--t-micro); color: var(--ink-3); }
+@media (max-width: 620px) { .vy-stats { grid-template-columns: 1fr 1fr; } }
+
+/* Key/value pairs that stay on one line and align down the column. */
+.vy-facts { display: grid; gap: 0; }
+.vy-fact {
+  display: grid; grid-template-columns: 1fr auto; gap: var(--s2);
+  align-items: baseline; padding: 7px 0; font-size: var(--t-small);
+  border-top: 1px solid var(--line);
+}
+.vy-fact:first-child { border-top: 0; }
+.vy-fact-k { color: var(--ink-2); }
+.vy-fact-v { font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+
+/* Inline meta: short facts separated by dots, instead of a sentence. */
+.vy-meta {
+  font-size: var(--t-micro); color: var(--ink-3);
+  display: flex; flex-wrap: wrap; gap: 4px 10px;
+}
+.vy-meta > span { white-space: nowrap; }
+.vy-meta > span + span::before { content: "·"; margin-right: 10px; color: var(--line-strong); }
+
+/* Disclosure text stays complete — restructured as scannable points rather
+   than shortened. Compressing protective wording is the one economy that
+   actually costs something. */
+.vy-points { margin: 6px 0 0; padding-left: 16px; }
+.vy-points li { margin-top: 3px; }
