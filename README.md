@@ -35,6 +35,29 @@ AUTH_SECRET=$(openssl rand -base64 32)
 
 Optional, to add Google sign-in: `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`.
 
+### Local development uses a separate database
+
+Production runs on the Neon database `neondb`. Local development runs on
+`veyra_dev` on the same Neon project, so development signups, resets and seed
+data never touch real user rows.
+
+`lib/auth/db.mjs` refuses to start outside production if `DATABASE_URL` points
+at the production database. This is not hypothetical caution: `vercel env pull`
+rewrites `.env.local` with the production connection string and says nothing
+about it, which is exactly how development ends up writing to live data. If you
+re-run it, repoint the database name afterwards:
+
+```bash
+sed -i '' 's#/neondb#/veyra_dev#g' .env.local
+```
+
+Set `VEYRA_ALLOW_PRODUCTION_DB=1` only for a deliberate one-off.
+
+A Neon *branch* is the better long-term split — separate compute and
+copy-on-write storage, resettable independently. Creating one needs a Neon API
+key from the Neon console, which is a browser step; a separate database gives
+the same data isolation without it.
+
 Apply the schema once (idempotent — every statement is `IF NOT EXISTS`):
 
 ```bash
