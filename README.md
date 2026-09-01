@@ -53,10 +53,33 @@ sed -i '' 's#/neondb#/veyra_dev#g' .env.local
 
 Set `VEYRA_ALLOW_PRODUCTION_DB=1` only for a deliberate one-off.
 
-A Neon *branch* is the better long-term split — separate compute and
-copy-on-write storage, resettable independently. Creating one needs a Neon API
-key from the Neon console, which is a browser step; a separate database gives
-the same data isolation without it.
+### Upgrading to a Neon branch
+
+A branch is the better split: its own compute endpoint and copy-on-write
+storage, resettable independently, with no contention against production.
+`scripts/neon-branch.mjs` does the whole switch, but it needs a Neon API key,
+which only the Neon console issues.
+
+1. Create one at <https://console.neon.tech/app/settings/api-keys>
+2. Put it in the environment — not on the command line, where it would be
+   written to shell history:
+
+   ```bash
+   export NEON_API_KEY=...
+   ```
+
+3. Run it:
+
+   ```bash
+   node --env-file=.env.local scripts/neon-branch.mjs
+   ```
+
+It creates the branch, waits for its endpoint, repoints `.env.local`, and sets
+`VEYRA_NEON_BRANCH`. Add `--reset` to recreate the branch from production.
+
+Note that a branch inherits its parent's database name, so a `dev` branch is
+still called `neondb`. The production guard keys off `VEYRA_NEON_BRANCH` for
+exactly that reason — a name check alone would reject a correct branch.
 
 Apply the schema once (idempotent — every statement is `IF NOT EXISTS`):
 
