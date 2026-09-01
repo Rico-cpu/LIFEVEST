@@ -18,7 +18,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import './../veyra/veyra.css';
 
-export default function SignInForm({ configured, missing, providers }) {
+export default function SignInForm({ configured, missing, providers, callbackUrl = '/veyra' }) {
   const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,7 +61,7 @@ export default function SignInForm({ configured, missing, providers }) {
         );
         return;
       }
-      window.location.href = '/veyra';
+      window.location.href = callbackUrl;
     } catch {
       setError('Something interrupted the request. Try again.');
     } finally {
@@ -159,7 +159,7 @@ export default function SignInForm({ configured, missing, providers }) {
             <div className="vy-auth-divider"><span>or</span></div>
             <button
               className="vy-btn vy-auth-submit"
-              onClick={() => signIn('google', { callbackUrl: '/veyra' })}
+              onClick={() => signIn('google', { callbackUrl })}
               disabled={busy}
             >
               Continue with Google

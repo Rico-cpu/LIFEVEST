@@ -15,7 +15,20 @@ export const metadata = {
   description: 'Sign in to Veyra.',
 };
 
-export default function SignInPage() {
+export default async function SignInPage({ searchParams }) {
   const cfg = authConfig();
-  return <SignInForm configured={cfg.configured} missing={cfg.missing} providers={cfg.providers} />;
+  const params = await searchParams;
+  // Only ever a same-site path: an attacker-supplied absolute URL here would
+  // turn sign-in into an open redirect.
+  const raw = typeof params?.callbackUrl === 'string' ? params.callbackUrl : '/veyra';
+  const callbackUrl = raw.startsWith('/') && !raw.startsWith('//') ? raw : '/veyra';
+
+  return (
+    <SignInForm
+      configured={cfg.configured}
+      missing={cfg.missing}
+      providers={cfg.providers}
+      callbackUrl={callbackUrl}
+    />
+  );
 }
