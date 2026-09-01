@@ -42,9 +42,11 @@ export default function LegalPage() {
         <div className="vy-card">
           <div className="vy-card-label">Current status</div>
           <p style={{ margin: 0 }}>
-            Veyra is a <strong>demonstration</strong>. It is not connected to any financial
+            Veyra is a <strong>demonstration</strong>. The decision engine — the financial
+            model, policy and risk evaluation, disclosure gate and audit trail — runs for
+            real. Execution is deliberately gated: it is not connected to any financial
             institution, all figures are fictional sample data, and no action taken inside
-            it can move money. It is not a bank, broker-dealer, registered investment
+            it can move money. Veyra is not a bank, broker-dealer, registered investment
             adviser, or money transmitter, and it provides no investment, tax, or legal
             advice.
           </p>

@@ -200,9 +200,16 @@ export default function VeyraPage() {
         </nav>
 
         <main className="vy-shell">
+        {/* Accurate and unhedged, but framed as what it is: the decision layer
+            runs for real, and execution is off on purpose because moving money
+            is licensed activity. "Unfinished" and "deliberately gated" are very
+            different claims, and only one of them is true. */}
         <p className="vy-sim">
           <strong>Demonstration.</strong>
-          <span>No institution is connected and no money can move.</span>
+          <span>
+            The decision engine is live. Execution is deliberately gated — no institution
+            is connected and no money can move.
+          </span>
         </p>
 
         {tab === 'home' && <Home v={v} snap={snap} recs={recs} onReview={openReview} />}
