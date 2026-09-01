@@ -12,9 +12,34 @@ no code path here can move money. See [LEGAL_STATUS.md](LEGAL_STATUS.md).
 
 | Route | What it is |
 | --- | --- |
+| `/` | Redirects to `/veyra` |
 | `/veyra` | The Veyra app — dashboard, plans, scenarios, statements, rules, activity |
+| `/signin` | Sign in / create account |
 | `/legal` | Terms, privacy notice, automation notice, and the disclosure register |
-| `/` | LifeVest, the earlier prototype, untouched |
+| `/lifevest` | LifeVest, the earlier prototype. A separate app, untouched. |
+| `/api/health` | Reports what is configured, without leaking any value |
+
+## Authentication
+
+Real accounts: email + password with scrypt hashing, sessions as signed JWTs
+that are revocable, and rate limiting held in Postgres so it works across
+serverless instances.
+
+It needs two environment variables. Without them the sign-in page says so
+plainly and offers the demonstration instead — it does not fake a session.
+
+```bash
+DATABASE_URL=postgresql://user:pass@host/db   # any Postgres; Neon's free tier is enough
+AUTH_SECRET=$(openssl rand -base64 32)
+```
+
+Optional, to add Google sign-in: `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`.
+
+Apply the schema once (idempotent — every statement is `IF NOT EXISTS`):
+
+```bash
+node --env-file=.env.local -e "import('./lib/auth/db.mjs').then(m=>m.migrate()).then(()=>console.log('migrated'))"
+```
 
 ## Run locally
 

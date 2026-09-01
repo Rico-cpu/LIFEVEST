@@ -457,3 +457,46 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ------------------------------------------------------------ auth screens */
+
+/* A single narrow column. Signing in is one decision, so nothing competes
+   with it — no nav, no chrome, no second call to action. */
+.vy-auth {
+  max-width: 380px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s3) var(--s6);
+  min-height: 100vh;
+}
+.vy-auth-submit { width: 100%; min-height: 46px; margin-top: var(--s1); }
+.vy-optional { color: var(--ink-3); font-weight: 400; }
+
+.vy-auth-divider {
+  display: flex; align-items: center; gap: var(--s2);
+  margin: var(--s3) 0 var(--s1); color: var(--ink-3); font-size: var(--t-micro);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.vy-auth-divider::before, .vy-auth-divider::after {
+  content: ""; flex: 1; height: 1px; background: var(--line);
+}
+
+/* Autofill in Chrome repaints the field with its own yellow; keep it on-theme
+   without hiding the fact that a value was filled. */
+.vy-input:-webkit-autofill,
+.vy-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+  caret-color: var(--ink);
+}
+
+.vy-authbadge {
+  margin-left: auto; display: inline-flex; align-items: center; gap: var(--s2);
+  font-size: var(--t-small); color: var(--ink-2); text-decoration: none;
+}
+.vy-authbadge-who {
+  max-width: 24ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* The level chip and the badge both want the right edge; the chip yields. */
+.vy-topbar-in .vy-chip { margin-left: auto; }
+.vy-topbar-in .vy-authbadge { margin-left: var(--s2); }
+@media (max-width: 560px) { .vy-authbadge-who { display: none; } }

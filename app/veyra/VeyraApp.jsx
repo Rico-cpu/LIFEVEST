@@ -24,6 +24,7 @@ import { compare } from '../../lib/veyra/strategies.mjs';
 import { run, increaseInvesting, majorPurchase, incomeChange } from '../../lib/veyra/scenarios.mjs';
 import { buildStatement } from '../../lib/veyra/statements.mjs';
 import { ACTIVATION_ACKNOWLEDGEMENTS, MODE, MODE_META } from '../../lib/veyra/autopilot.mjs';
+import AuthBadge from './AuthBadge';
 import { statementRows, statementSheets, toCSV, toWorkbookXML, filenameFor, download, MIME } from '../../lib/veyra/export.mjs';
 
 const HUMAN = { kind: 'user', id: 'u_demo' };
@@ -179,6 +180,7 @@ export default function VeyraPage() {
           <span className="vy-chip" title={LEVEL_META[v.authorizationLevel].summary}>
             {LEVEL_META[v.authorizationLevel].name}
           </span>
+          <AuthBadge />
         </div>
       </header>
 
